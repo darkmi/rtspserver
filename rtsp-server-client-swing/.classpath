@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/AbsoluteLayout.jar"/>
+	<classpathentry kind="lib" path="lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/freemarker-2.3.18.jar"/>
+	<classpathentry kind="lib" path="lib/google-collections-1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/google-collections-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/javassist-3.11.0.GA.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/mina-core-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-example-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-filter-compression-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-integration-beans-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-integration-jmx-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-integration-ognl-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-integration-xbean-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-statemachine-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/mina-transport-apr-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/myutil.jar"/>
+	<classpathentry kind="lib" path="lib/ognl-3.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.11.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.11.jar"/>
+	<classpathentry kind="lib" path="lib/struts2-core-2.3.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/swing-layout-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/xwork-core-2.3.1.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

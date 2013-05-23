@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.darkmi</groupId>
+	<artifactId>rtsp-server</artifactId>
+	<version>1.0.0</version>
+	<name>RTSPServer Project</name>
+	<packaging>pom</packaging>
+
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>Team Nexus Repository</name>
+			<url>http://10.10.20.201:8081/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<name>Team Nexus Repository</name>
+			<url>http://10.10.20.201:8081/nexus/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<modules>
+		<module>rtsp-server-parent</module>
+		<module>rtsp-server-mina</module>
+		<module>rtsp-server-netty</module>
+	</modules>
+</project>
