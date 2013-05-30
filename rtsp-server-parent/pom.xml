@@ -30,7 +30,6 @@
 		<compass.version>2.2.0</compass.version>
 		<thrift.version>0.8.0</thrift.version>
 		<commons-pool.version>1.6</commons-pool.version>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -49,6 +48,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+
+		<repositories>
+			<repository>
+				<id>swt-repo</id>
+				<url>https://swt-repo.googlecode.com/svn/repo/</url>
+			</repository>
+		</repositories>
+
 
 		<repository>
 			<id>springside</id>
@@ -77,14 +84,8 @@
 			</snapshots>
 		</repository>
 
-		<repository>
-			<id>morphia.googlecode.com</id>
-			<name>morphia.googlecode.com Repository</name>
-			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+		<!-- <repository> <id>morphia.googlecode.com</id> <name>morphia.googlecode.com Repository</name> <url>http://morphia.googlecode.com/svn/mavenrepo/</url> 
+			<snapshots> <enabled>false</enabled> </snapshots> </repository> -->
 	</repositories>
 
 	<pluginRepositories>
@@ -114,59 +115,19 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- vodlite modules begin -->
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-core</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-extension</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-entity</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-common</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>rcserver-pageserverclient</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>rcserver-srmclient</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>rcserver-caclient</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>rcserver-sessiondb</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>rcserver-common</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>srm-common</artifactId>
-				<version>${vodlite.version}</version>
-			</dependency>
-			<!-- vodlite modules end -->
-
+		<dependency>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
+			<version>3.7.2</version>
+		</dependency>
+		
+		<!-- Eclipse's JFace extensions -->
+		<dependency>
+			<groupId>org.eclipse.ui</groupId>
+			<artifactId>org.eclipse.ui.workbench</artifactId>
+			<version>3.7.1.v20120104-1859</version>
+		</dependency>
+		
 			<!-- spring begin -->
 			<dependency>
 				<groupId>org.springframework</groupId>
