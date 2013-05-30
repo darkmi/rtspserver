@@ -27,33 +27,33 @@
 	</bean>
 
 	<!-- 使用annotation 自动注册bean,并保证@Required,@Autowired的属性被注入 -->
-	<context:component-scan base-package="com.darkmi.vvs" />
+	<context:component-scan base-package="com.darkmi.server" />
 	
 	<!-- 定义默认的session管理器 -->
-	<bean id="defaultSessionAccessor" class="com.darkmi.vvs.session.DefaultSessionAccessor">
+	<bean id="defaultSessionAccessor" clascom.darkmi.server.sessionion.DefaultSessionAccessor">
 	</bean>
 
 	<!-- 定义555端口的消息处理器 -->
-	<bean id="setupMessageHandler" class="com.darkmi.vvs.SetupMessageHandler">
+	<bean id="setupMessageHandler" class="com.darkmi.server.SetupMessageHandler">
 		<property name="sessionAccessor" ref="defaultSessionAccessor"></property>
 		<property name="vvsIpAddress" value="${vvs.server.ip}"></property>
 		<property name="playPort" value="${vvs.playserver.port}"></property>
 	</bean>
 
 	<!-- 定义8060端口的消息处理器 -->
-	<bean id="playMessageHandler" class="com.darkmi.vvs.PlayMessageHandler">
+	<bean id="playMessageHandler" class="com.darkmi.server.PlayMessageHandler">
 		<property name="sessionAccessor" ref="defaultSessionAccessor"></property>
 	</bean>
 
 	<!--启动setupServer -->
-	<bean id="setupServer" class="com.darkmi.vvs.SetupServer">
+	<bean id="setupServer" class="com.darkmi.server.SetupServer">
 		<!--<property name="vvsIpAddress" value="${vvs.server.ip}"></property>-->
 		<property name="setupPort" value="${vvs.setupserver.port}"></property>
 		<property name="setupMessageHandler" ref="setupMessageHandler"></property>
 	</bean>
 
 	<!--启动playServer -->
-	<bean id="playServer" class="com.darkmi.vvs.PlayServer">
+	<bean id="playServer" class="com.darkmi.server.PlayServer">
 		<!--<property name="vvsIpAddress" value="${vvs.server.ip}"></property>-->
 		<property name="playPort" value="${vvs.playserver.port}"></property>
 		<property name="playMessageHandler" ref="playMessageHandler"></property>

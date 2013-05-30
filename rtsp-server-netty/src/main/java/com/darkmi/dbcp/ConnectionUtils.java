@@ -11,30 +11,20 @@ import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
-/**
- * ´´½¨Á¬½Ó
- * 
- * @since 2009-1-22 ÏÂÎç02:58:35
- */
+
 public class ConnectionUtils {
-	// Ò»Ð©common-dbcpÄÚ²¿¶¨ÒåµÄprotocol
+	// Ò»Ð©common-dbcpï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½protocol
 	private static final String POOL_DRIVER_KEY = "jdbc:apache:commons:dbcp:";
 	private static final String POLLING_DRIVER = "org.apache.commons.dbcp.PoolingDriver";
 
-	/**
-	 * È¡µÃ³Ø»¯Çý¶¯Æ÷
-	 * 
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
+
 	private static PoolingDriver getPoolDriver() throws ClassNotFoundException, SQLException {
 		Class.forName(POLLING_DRIVER);
 		return (PoolingDriver) DriverManager.getDriver(POOL_DRIVER_KEY);
 	}
 
 	/**
-	 * Ïú»ÙËùÓÐÁ¬½Ó
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @throws Exception
 	 */
@@ -47,22 +37,23 @@ public class ConnectionUtils {
 	}
 
 	/**
-	 * ´ÓÁ¬½Ó³ØÖÐ»ñÈ¡Êý¾Ý¿âÁ¬½Ó
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½Ð»ï¿½È¡ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Connection getConnection(TableMetaData table) throws Exception {
 		String key = table.getConnectionKey();
 
 		PoolingDriver driver = getPoolDriver();
 
 		ObjectPool pool = null;
-		// ÕâÀïÕÒ²»µ½Á¬½Ó³Ø»áÅ×Òì³£, ÐèÒªcatchÒ»ÏÂ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ø»ï¿½ï¿½ï¿½ï¿½ì³£, ï¿½ï¿½ÒªcatchÒ»ï¿½ï¿½
 		try {
 			pool = driver.getConnectionPool(key);
 		} catch (Exception e) {
 		}
 
 		if (pool == null) {
-			// ¸ù¾ÝÊý¾Ý¿âÀàÐÍ¹¹½¨Á¬½Ó¹¤³§
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½
 			ConnectionFactory connectionFactory = null;
 			if (table.getDbAddr() != null && TableMetaData.DB_TYPE_MYSQL == table.getDbType()) {
 				Class.forName(TableMetaData.MYSQL_DRIVER);
@@ -72,15 +63,15 @@ public class ConnectionUtils {
 				connectionFactory = new DriverManagerConnectionFactory(table.getDBUrl(), table.getDbuser(), table.getDbpass());
 			}
 
-			// ¹¹ÔìÁ¬½Ó³Ø
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½
 			ObjectPool connectionPool = new GenericObjectPool(null);
 			new PoolableConnectionFactory(connectionFactory, connectionPool, null, null, false, true);
 
-			// ½«Á¬½Ó³Ø×¢²áµ½driverÖÐ
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½×¢ï¿½áµ½driverï¿½ï¿½
 			driver.registerPool(key, connectionPool);
 		}
 
-		// ´ÓÁ¬½Ó³ØÖÐÄÃÒ»¸öÁ¬½Ó
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		return DriverManager.getConnection(POOL_DRIVER_KEY + key);
 	}
 
