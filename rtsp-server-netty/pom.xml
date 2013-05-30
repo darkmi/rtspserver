@@ -8,6 +8,7 @@
 		<groupId>com.darkmi</groupId>
 		<artifactId>rtsp-server-parent</artifactId>
 		<version>1.0.0</version>
+		<relativePath></relativePath>
 	</parent>
 	<groupId>com.darkmi</groupId>
 	<artifactId>rtsp-server-netty</artifactId>
@@ -24,28 +25,6 @@
 
 	<!-- 依赖项定义 -->
 	<dependencies>
-		<!-- springside -->
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-core</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-extension</artifactId>
-			</dependency>
-				<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-entity</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>cn.com.supertv</groupId>
-				<artifactId>vodlite-common</artifactId>
-			</dependency>
-	 	 <dependency>
-			<groupId>cn.com.supertv</groupId>
-			<artifactId>srm-common</artifactId>
-			<version>3.0.0</version>
-	 	 </dependency>	 	 
 		<!-- spring begin -->
 		<dependency>
 			<groupId>org.springframework</groupId>

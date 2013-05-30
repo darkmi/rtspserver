@@ -12,10 +12,9 @@ import org.jboss.netty.handler.codec.rtsp.RtspHeaders;
 import org.jboss.netty.handler.codec.rtsp.RtspResponseStatuses;
 import org.jboss.netty.handler.codec.rtsp.RtspVersions;
 
+import com.darkmi.util.DateUtil;
 import com.darkmi.vvs.core.RtspController;
 import com.darkmi.vvs.session.RtspSession;
-
-import cn.com.supertv.srmserver.util.DateUtil;
 
 /**
  * 处理PAUSE请求.

@@ -26,58 +26,7 @@
 	</bean>
 
 	<!-- 使用annotation 自动注册bean,并保证@Required,@Autowired的属性被注入 -->
-	<context:component-scan base-package="cn.com.supertv" />
-
-	<!-- 数据源配置,使用应用内的DBCP数据库连接池 -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<!-- Connection Info -->
-		<property name="driverClassName" value="${jdbc.driver}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
-
-		<!-- Connection Pooling Info -->
-		<property name="maxIdle" value="${dbcp.maxIdle}" />
-		<property name="maxActive" value="${dbcp.maxActive}" />
-		<property name="defaultAutoCommit" value="false" />
-		<property name="timeBetweenEvictionRunsMillis" value="3600000" />
-		<property name="minEvictableIdleTimeMillis" value="3600000" />
-	</bean>
-
-	<!-- Hibernate配置 -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="namingStrategy"><bean class="org.hibernate.cfg.ImprovedNamingStrategy" /></property>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
-				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
-				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
-				<prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache/ehcache-hibernate-local.xml</prop>
-			</props>
-		</property>
-		<property name="packagesToScan" value="cn.com.supertv.entity" />
-		<property name="eventListeners">
-			<map>
-				<entry key="save-update">
-					<list>
-						<bean class="cn.com.supertv.entity.AuditListener" />
-						<bean class="cn.com.supertv.entity.TreeListener" />
-						<bean class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener" />
-					</list>
-				</entry>
-			</map>
-		</property>
-	</bean>
-
-	<!-- 事务管理器配置,单数据源事务 -->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<!-- 使用annotation定义事务 -->
-	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	<context:component-scan base-package="com.darkmi" />
 
 	<!-- 视频服务器点播模块 -->
 	<bean id="vvs" class="com.darkmi.vvs.core.RtspController">

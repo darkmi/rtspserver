@@ -1,4 +1,4 @@
-package cn.com.supertv.vvs;
+package com.darkmi.vvs;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -12,10 +12,9 @@ import org.jboss.netty.handler.codec.rtsp.RtspVersions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.darkmi.util.DateUtil;
 import com.darkmi.vvs.core.RtspController;
 import com.darkmi.vvs.session.RtspSession;
-
-import cn.com.supertv.srmserver.util.DateUtil;
 
 /**
  * 处理TEARDOWN请求.

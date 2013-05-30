@@ -28,37 +28,9 @@
 
 	<!-- 使用annotation 自动注册bean,并保证@Required,@Autowired的属性被注入 -->
 	<context:component-scan base-package="com.darkmi.vvs" />
-
- 	<!-- mongodb数据源配置 -->
-	<!--  
-	<bean id="mongoOptions" class="org.springside.modules.orm.mongodb.MongoOptionsFactoryBean">
-	    <property name="connectionsPerHost" value="${mongo.connectionsPerHost}" />
-		<property name="threadsAllowedToBlockForConnectionMultiplier" value="${mongo.threadsAllowedToBlockForConnectionMultiplier}" />
-		<property name="maxWaitTime" value="${mongo.maxWaitTime}" />
-		<property name="connectTimeout" value="${mongo.connectTimeout}" />
-		<property name="socketTimeout" value="${mongo.socketTimeout}" />
-		<property name="autoConnectRetry" value="${mongo.autoConnectRetry}" />
-	</bean>
 	
-	<bean id="mongo" class="org.springside.modules.orm.mongodb.MongoFactoryBean">
-	    <property name="host" value="${mongo.host}" />
-		<property name="port" value="${mongo.port}" />
-		<property name="mongoOptions"  ref="mongoOptions" />
-	</bean>
-	
-	<bean id="morphia" class="com.google.code.morphia.Morphia"></bean>
-	 
-	<bean id="ds" class="com.google.code.morphia.DatastoreImpl">
-	  	<constructor-arg ref="morphia" />
-	  	<constructor-arg ref="mongo" />
-	  	<constructor-arg value="${mongo.name}" />
-	  	<constructor-arg value="${mongo.username}" />
-		<constructor-arg value="${mongo.password}" />
-	</bean>
-	-->
-
 	<!-- 定义默认的session管理器 -->
-	<bean id="defaultSessionAccessor" class="cn.ccom.darkmi.vvs.sessionaultSessionAccessor">
+	<bean id="defaultSessionAccessor" class="com.darkmi.vvs.session.DefaultSessionAccessor">
 	</bean>
 
 	<!-- 定义555端口的消息处理器 -->

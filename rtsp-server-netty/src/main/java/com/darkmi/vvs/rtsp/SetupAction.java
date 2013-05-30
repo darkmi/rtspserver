@@ -13,13 +13,9 @@ import org.jboss.netty.handler.codec.rtsp.RtspVersions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.darkmi.util.DateUtil;
 import com.darkmi.vvs.core.RtspController;
 import com.darkmi.vvs.session.RtspSession;
-
-import cn.com.supertv.entity.rm.VideoTypeEnum;
-import cn.com.supertv.srmserver.rtsp.RtspTransport;
-import cn.com.supertv.srmserver.rtsp.TransportTypeEnum;
-import cn.com.supertv.srmserver.util.DateUtil;
 
 /**
  * 处理SETUP请求.
@@ -72,19 +68,20 @@ public class SetupAction implements Callable<HttpResponse> {
 			return response;
 		}
 
-		//获取SRM分配的资源
-		RtspTransport rtspTransport = null;
-		try {
-			if (REQUIRE_VALUE_HFC.equalsIgnoreCase(requireVale)) {
-				rtspTransport = new RtspTransport(strTransport, VideoTypeEnum.CCUR, TransportTypeEnum.REQUEST);
-			} else if (REQUIRE_VALUE_NGOD_R2.equalsIgnoreCase(requireVale)) {
-				rtspTransport = new RtspTransport(strTransport, VideoTypeEnum.DILU, TransportTypeEnum.REQUEST);
-			}
-		} catch (Exception e) {
-			logger.error(e.toString());
-		}
+		//		//获取SRM分配的资源
+		//		RtspTransport rtspTransport = null;
+		//		try {
+		//			if (REQUIRE_VALUE_HFC.equalsIgnoreCase(requireVale)) {
+		//				rtspTransport = new RtspTransport(strTransport, VideoTypeEnum.CCUR, TransportTypeEnum.REQUEST);
+		//			} else if (REQUIRE_VALUE_NGOD_R2.equalsIgnoreCase(requireVale)) {
+		//				rtspTransport = new RtspTransport(strTransport, VideoTypeEnum.DILU, TransportTypeEnum.REQUEST);
+		//			}
+		//		} catch (Exception e) {
+		//			logger.error(e.toString());
+		//		}
 		//获取destination
-		String destination = rtspTransport.getDestination();
+		//String destination = rtspTransport.getDestination();
+		String destination = null;
 		if (null == destination || "".equals(destination)) {
 			logger.error("destination is null.");
 			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
@@ -93,13 +90,14 @@ public class SetupAction implements Callable<HttpResponse> {
 			return response;
 		}
 		//获取port
-		int port = rtspTransport.getQam_port();
+		//int port = rtspTransport.getQam_port();
 
 		//创建session并记录使用资源
+		@SuppressWarnings("unused")
 		String sessionKey = RtspController.getKeyFactory().createSessionKey();
 		logger.debug("sessionKey --> " + sessionKey);
 		RtspSession rtspSession = rtspController.getSessionAccessor().getSession(sessionKey, true);
-		rtspSession.setAttribute(destination + ":" + port, "USED");
+		rtspSession.setAttribute(destination + ":" + 1, "USED");
 
 		//----------------------
 		if (REQUIRE_VALUE_HFC.equalsIgnoreCase(requireVale)) {
@@ -109,7 +107,7 @@ public class SetupAction implements Callable<HttpResponse> {
 			response.setHeader(RtspHeaders.Names.CSEQ, cseq);
 			response.setHeader(HttpHeaders.Names.DATE, DateUtil.getGmtDate());
 			response.setHeader(RtspHeaders.Names.SESSION, sessionKey + ";timeout=60");
-			response.setHeader(RtspHeaders.Names.TRANSPORT, rtspTransport.toString());
+			response.setHeader(RtspHeaders.Names.TRANSPORT, "");
 			response.setHeader(RtspHeaders.Names.RANGE, "npt=0-233.800");
 			String location = "rtsp://" + rtspController.getBindAddress() + ":" + rtspController.getSmPort() + "/"
 					+ request.getUri();
@@ -124,7 +122,7 @@ public class SetupAction implements Callable<HttpResponse> {
 			response.setHeader(HttpHeaders.Names.DATE, DateUtil.getGmtDate());
 			response.setHeader(RtspHeaders.Names.SESSION, sessionKey + ";timeout=60");
 			//response.setHeader(RtspHeaders.Names.OnDemandSessionId, request.getHeader(RtspHeaderCode.OnDemandSessionId));
-			response.setHeader(RtspHeaders.Names.TRANSPORT, rtspTransport.toString());
+			response.setHeader(RtspHeaders.Names.TRANSPORT, "");
 			response.setHeader(RtspHeaders.Names.RANGE, "npt=0-233.800");
 			response.setHeader(RtspHeaders.Names.CONTENT_TYPE, "application/sdp");
 

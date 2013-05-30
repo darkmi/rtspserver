@@ -12,7 +12,6 @@ import org.jboss.netty.handler.codec.rtsp.RtspVersions;
 
 import com.darkmi.vvs.core.RtspController;
 
-import cn.com.supertv.srmserver.util.DateUtil;
 
 /**
  * 处理PAUSE请求.
@@ -36,7 +35,7 @@ public class AnnounceAction implements Callable<HttpRequest> {
 		String uri = "rtsp://192.168.14.220:8060/movie---26---bianfuxiaqianchuan";
 		request = new DefaultHttpRequest(RtspVersions.RTSP_1_0, RtspMethods.ANNOUNCE, uri);
 		request.setHeader(RtspHeaders.Names.CSEQ, "111");
-		request.setHeader(RtspHeaders.Names.DATE, DateUtil.getGmtDate());
+		request.setHeader(RtspHeaders.Names.DATE, null);
 		String sessionKey = response.getHeader(RtspHeaders.Names.SESSION);
 		request.setHeader(RtspHeaders.Names.SESSION, sessionKey);
 		request.setHeader("Notice", "1103 \"Stream Stalled\" event-date=20000406T091645Z");

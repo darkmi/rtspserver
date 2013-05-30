@@ -13,8 +13,7 @@ public class InetAddressExample {
 	public static void main(String[] args) {
 
 		try {
-			//1.获取主机的网络接口列表
-			//静态方法getNetworkInterface()返回一个列表,其中包含勒该主机每一个接口所对应的NetworkInterface类实例。
+
 			Enumeration<NetworkInterface> interfaceList = NetworkInterface.getNetworkInterfaces();
 			if (interfaceList == null) {
 				System.out.println("--No interface found--");
