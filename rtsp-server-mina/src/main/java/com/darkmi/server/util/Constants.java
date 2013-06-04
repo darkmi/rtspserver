@@ -1,4 +1,4 @@
-package com.darkmi.server.utils;
+package com.darkmi.server.util;
 
 /**
  * 系统常量定义.

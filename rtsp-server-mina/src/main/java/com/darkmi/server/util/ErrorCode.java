@@ -1,4 +1,4 @@
-package com.darkmi.server.utils;
+package com.darkmi.server.util;
 
 public enum ErrorCode {
 	SystemError("10001"), SystemBusy("10002"), ParamError("10003"), NotSuportedMethod("10004"), ResourceNotFound(

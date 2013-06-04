@@ -1,4 +1,4 @@
-package com.darkmi.server.utils;
+package com.darkmi.server.util;
 
 import java.util.Properties;
 import java.util.ResourceBundle;
