@@ -1,6 +1,5 @@
 package com.darkmi.vvs.session;
 
-import org.apache.mina.core.RuntimeIoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +41,10 @@ public class BasicSessionStore implements RtspSessionStore {
 			} catch (Error e) {
 				throw e;
 			} catch (Exception e) {
-				throw new RuntimeIoException("Failed to create a session.", e);
+				//throw new RuntimeIoException("Failed to create a session.", e);
 			}
 		}
+		return null;
 	}
 
 	private RtspSession newSessionWithoutLock(String sessionKey, boolean create) throws Exception {

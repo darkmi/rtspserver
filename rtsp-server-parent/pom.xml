@@ -8,28 +8,16 @@
 	<name>RTSPServer's Parent pom.xml</name>
 	<version>1.0.0</version>
 	<organization>
-		<name>DarkMi</name>
+		<name>RTSP SERVER 1.0</name>
 		<url>http://www.darkmi.com</url>
 	</organization>
 
 	<properties>
-		<vodlite.version>3.0.0</vodlite.version>
-		<spring.version>3.0.4.RELEASE</spring.version>
-		<hibernate.version>3.5.5-Final</hibernate.version>
-		<struts2.version>2.2.1</struts2.version>
-		<cxf.version>2.2.10</cxf.version>
-		<jersey.version>1.11</jersey.version>
+		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.data.version>1.2.0.RELEASE</spring.data.version>
 		<spring-security.version>3.0.3.RELEASE</spring-security.version>
-		<activemq.version>5.4.0</activemq.version>
-		<jetty.version>6.1.25</jetty.version>
-		<h2.version>1.2.142</h2.version>
-		<quartz.version>1.8.4</quartz.version>
-		<jackson.version>1.6.0</jackson.version>
 		<slf4j.version>1.6.1</slf4j.version>
-		<selenium.version>2.0a5</selenium.version>
-		<compass.version>2.2.0</compass.version>
-		<thrift.version>0.8.0</thrift.version>
-		<commons-pool.version>1.6</commons-pool.version>
+		<!-- Plugin的属性定义 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -48,14 +36,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-
-		<repositories>
-			<repository>
-				<id>swt-repo</id>
-				<url>https://swt-repo.googlecode.com/svn/repo/</url>
-			</repository>
-		</repositories>
-
 
 		<repository>
 			<id>springside</id>
@@ -84,8 +64,6 @@
 			</snapshots>
 		</repository>
 
-		<!-- <repository> <id>morphia.googlecode.com</id> <name>morphia.googlecode.com Repository</name> <url>http://morphia.googlecode.com/svn/mavenrepo/</url> 
-			<snapshots> <enabled>false</enabled> </snapshots> </repository> -->
 	</repositories>
 
 	<pluginRepositories>
@@ -115,19 +93,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-			<version>3.7.2</version>
-		</dependency>
-		
-		<!-- Eclipse's JFace extensions -->
-		<dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>org.eclipse.ui.workbench</artifactId>
-			<version>3.7.1.v20120104-1859</version>
-		</dependency>
-		
 			<!-- spring begin -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -144,6 +109,8 @@
 				<artifactId>spring-context</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+
+			<!-- spring aop -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aop</artifactId>
@@ -217,34 +184,6 @@
 			<!-- database access end -->
 
 			<!-- web begin -->
-			<!-- struts2 -->
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-core</artifactId>
-				<version>${struts2.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.sun</groupId>
-						<artifactId>tools</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-spring-plugin</artifactId>
-				<version>${struts2.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-convention-plugin</artifactId>
-				<version>${struts2.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.freemarker</groupId>
-				<artifactId>freemarker</artifactId>
-				<version>2.3.16</version>
-			</dependency>
-
 			<!-- spring web -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -292,6 +231,13 @@
 				<version>1.1.2</version>
 			</dependency>
 
+			<!-- flexjson -->
+			<dependency>
+				<groupId>net.sf.flexjson</groupId>
+				<artifactId>flexjson</artifactId>
+				<version>2.1</version>
+			</dependency>
+
 			<!-- url rewrite -->
 			<dependency>
 				<groupId>org.tuckey</groupId>
@@ -300,103 +246,6 @@
 			</dependency>
 			<!-- web end -->
 
-			<!-- webservice begin -->
-			<!-- cxf -->
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-core</artifactId>
-				<version>${cxf.version}</version>
-				<exclusions>
-					<!-- use javax.mail.mail instead -->
-					<exclusion>
-						<groupId>org.apache.geronimo.specs</groupId>
-						<artifactId>geronimo-javamail_1.4_spec</artifactId>
-					</exclusion>
-					<!-- use javax.activation.activation instead -->
-					<exclusion>
-						<groupId>org.apache.geronimo.specs</groupId>
-						<artifactId>geronimo-activation_1.1_spec</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-frontend-jaxws</artifactId>
-				<version>${cxf.version}</version>
-				<exclusions>
-					<!-- see above -->
-					<exclusion>
-						<groupId>org.apache.geronimo.specs</groupId>
-						<artifactId>geronimo-javamail_1.4_spec</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.geronimo.specs</groupId>
-						<artifactId>geronimo-activation_1.1_spec</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-transports-http</artifactId>
-				<version>${cxf.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-ws-security</artifactId>
-				<version>${cxf.version}</version>
-			</dependency>
-			<!-- webservice end -->
-
-			<!-- rest begin -->
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-server</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-client</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-client</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-json</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey.contribs</groupId>
-				<artifactId>jersey-spring</artifactId>
-				<version>${jersey.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<!-- rest end -->
-			<!-- morphia begin -->
-			<dependency>
-				<groupId>com.google.code.morphia</groupId>
-				<artifactId>morphia</artifactId>
-				<version>0.99</version>
-			</dependency>
-			<dependency>
-				<groupId>com.thoughtworks.proxytoys</groupId>
-				<artifactId>proxytoys</artifactId>
-				<version>1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mongodb</groupId>
-				<artifactId>mongo-java-driver</artifactId>
-				<version>2.7.3</version>
-			</dependency>
-			<!-- morphia end -->
 			<!-- security begin -->
 			<dependency>
 				<groupId>org.springframework.security</groupId>
@@ -426,33 +275,6 @@
 			</dependency>
 			<!-- security end -->
 
-			<!-- jms begin -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jms</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-core</artifactId>
-				<version>${activemq.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.activemq.protobuf</groupId>
-						<artifactId>activemq-protobuf</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework.osgi</groupId>
-						<artifactId>spring-osgi-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.osgi</groupId>
-						<artifactId>org.osgi.core</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<!-- jms end -->
 
 			<!-- compass -->
 			<dependency>
@@ -467,35 +289,6 @@
 				<artifactId>quartz</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>
-
-			<!-- memcached begin -->
-			<dependency>
-				<groupId>spy</groupId>
-				<artifactId>memcached</artifactId>
-				<version>2.5</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.googlecode.xmemcached</groupId>
-				<artifactId>xmemcached</artifactId>
-				<version>1.3.6</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.thimbleware.jmemcached</groupId>
-				<artifactId>jmemcached-core</artifactId>
-				<version>0.8</version>
-				<scope>test</scope>
-			</dependency>
-			<!-- memcached end -->
-
-			<!-- thrift begin -->
-			<dependency>
-				<groupId>org.apache.thrift</groupId>
-				<artifactId>libthrift</artifactId>
-				<version>${thrift.version}</version>
-			</dependency>
-			<!-- thrift end -->
 
 			<!-- commons-pool begin -->
 			<dependency>
@@ -556,19 +349,6 @@
 			</dependency>
 			<!-- logging end -->
 
-			<!-- email begin -->
-			<dependency>
-				<groupId>javax.mail</groupId>
-				<artifactId>mail</artifactId>
-				<version>1.4.3</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.activation</groupId>
-				<artifactId>activation</artifactId>
-				<version>1.1.1</version>
-			</dependency>
-			<!-- email end -->
-
 			<!-- xml begin -->
 			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
@@ -594,14 +374,6 @@
 				<version>2.9.1</version>
 			</dependency>
 			<!-- xml end -->
-
-			<!-- excel begin -->
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi</artifactId>
-				<version>3.6</version>
-			</dependency>
-			<!-- excel end -->
 
 			<!-- utils begin -->
 			<dependency>
@@ -661,11 +433,6 @@
 				<artifactId>jcip-annotations</artifactId>
 				<version>1.0</version>
 			</dependency>
-			<dependency>
-				<groupId>pinyin4j</groupId>
-				<artifactId>pinyin4j</artifactId>
-				<version>2.5.0</version>
-			</dependency>
 
 			<dependency>
 				<groupId>ognl</groupId>
@@ -678,13 +445,6 @@
 						<artifactId>javassist</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-
-			<!-- template engine -->
-			<dependency>
-				<groupId>org.apache.velocity</groupId>
-				<artifactId>velocity</artifactId>
-				<version>1.6.4</version>
 			</dependency>
 
 			<!-- cache (usually for orm) -->
@@ -718,13 +478,6 @@
 				<artifactId>edtftpj</artifactId>
 				<version>2.3.0</version>
 			</dependency>
-
-			<!-- flexjson -->
-			<dependency>
-				<groupId>net.sf.flexjson</groupId>
-				<artifactId>flexjson</artifactId>
-				<version>2.1</version>
-			</dependency>
 			<!-- utils end -->
 
 			<dependency>
@@ -733,6 +486,32 @@
 				<version>2.0.7</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.apache.axis</groupId>
+				<artifactId>axis</artifactId>
+				<version>1.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.jaxrpc</groupId>
+				<artifactId>jaxrpc</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons.discovery</groupId>
+				<artifactId>commons-discovery</artifactId>
+				<version>0.2</version>
+			</dependency>
+
+
 			<!-- test begin -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -740,36 +519,25 @@
 				<version>4.8.1</version>
 				<scope>test</scope>
 			</dependency>
+
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>3.0</version>
 				<scope>test</scope>
 			</dependency>
+
 			<dependency>
 				<groupId>mockit</groupId>
 				<artifactId>jmockit</artifactId>
 				<version>0.999.2</version>
 				<scope>test</scope>
 			</dependency>
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- jetty -->
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty</artifactId>
-				<version>${jetty.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jsp-2.1-jetty</artifactId>
-				<version>${jetty.version}</version>
 				<scope>test</scope>
 			</dependency>
 
@@ -796,18 +564,6 @@
 				<groupId>org.seleniumhq.selenium</groupId>
 				<artifactId>selenium-remote-client</artifactId>
 				<version>${selenium.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.dbunit</groupId>
-				<artifactId>dbunit</artifactId>
-				<version>2.4.8</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${h2.version}</version>
 				<scope>test</scope>
 			</dependency>
 
@@ -842,26 +598,6 @@
 				<scope>provided</scope>
 			</dependency>
 
-			<!-- jsw + jetty runtime -->
-			<dependency>
-				<groupId>tanukisoft</groupId>
-				<artifactId>jsw</artifactId>
-				<version>3.5.3</version>
-				<scope>provided</scope>
-				<type>zip</type>
-			</dependency>
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-management</artifactId>
-				<version>${jetty.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>start</artifactId>
-				<version>${jetty.version}</version>
-				<scope>provided</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
