@@ -1,0 +1,10 @@
+package com.darkmi.rtsp.server.web.config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = "com.darkmi")
+public class DefaultAppConfig {
+
+}

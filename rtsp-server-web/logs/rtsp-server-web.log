@@ -1,0 +1,2 @@
+2013-06-17 14:43:56,984 [qtp11994696-17] WARN  [org.springframework.web.servlet.PageNotFound] - No mapping found for HTTP request with URI [/] in DispatcherServlet with name 'dispatcher'
+2013-06-17 14:44:15,218 [qtp11994696-17] WARN  [org.springframework.web.servlet.PageNotFound] - No mapping found for HTTP request with URI [/user.do] in DispatcherServlet with name 'dispatcher'
