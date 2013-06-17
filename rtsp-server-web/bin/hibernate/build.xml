@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="hibernate tools" default="generate.code" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<property name="hibernatetools-templates.path" value="../../../../tools/hibernatetools" />
+
+	<artifact:dependencies pathId="toolslib">
+		<pom file="../../pom.xml" />
+	</artifact:dependencies>
+
+	<taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask" classpathref="toolslib" />
+
+	<target name="generate.code">
+		<hibernatetool destdir="generated" templatepath="${hibernatetools-templates.path}/">
+			<classpath>
+				<path location="../../target/classes" />
+			</classpath>
+
+			<jdbcconfiguration configurationfile="hibernate.cfg.xml" revengfile="hibernate.reveng.xml" detectmanytomany="true" namingstrategy="org.hibernate.cfg.ImprovedNamingStrategy" reversestrategy="org.springside.modules.orm.hibernate.IgnorePrefixReverseEngineeringStrategy" />
+
+			<hbmtemplate templateprefix="pojo/" template="pojo/Pojo.ftl" filepattern="entity/{package-name}/{class-name}.java">
+				<property key="jdk5" value="true" />
+				<property key="ejb3" value="true" />
+			</hbmtemplate>
+			<hbmtemplate templateprefix="pojo/" template="dao.ftl" filepattern="dao/{package-name}/{class-name}Dao.java" />
+			<hbmtemplate templateprefix="pojo/" template="manager.ftl" filepattern="manager/{package-name}/{class-name}Manager.java" />
+		</hibernatetool>
+	</target>
+</project>

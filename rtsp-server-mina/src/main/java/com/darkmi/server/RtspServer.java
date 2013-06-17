@@ -24,12 +24,13 @@ public class RtspServer {
 	private static final int MIN_READ_BUFFER_SIZE = 4096;
 	private RtspMessageHandler messageHandler;
 	private IoAcceptor acceptor;
-	private String ip;
+	//private String ip;
 	private int port;
 	private int setupPort;
 	private int playPort;
 
 	public void start() {
+		
 		acceptor = new NioSocketAcceptor(Runtime.getRuntime().availableProcessors() + 1);
 		acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MessageCodecFactory()));
 		acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
@@ -50,33 +51,34 @@ public class RtspServer {
 
 	/*-----------   Setters   --------------*/
 
+	@Autowired
 	public void setMessageHandler(RtspMessageHandler messageHandler) {
 		this.messageHandler = messageHandler;
 	}
 
-	@Autowired
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
+	//@Autowired
+	//public void setIp(String ip) {
+	//	this.ip = ip;
+	//}
 
-	@Autowired
+	//@Autowired
 	public void setPort(int port) {
 		this.port = port;
 	}
 
-	@Autowired
+	//@Autowired
 	public void setSetupPort(int setupPort) {
 		this.setupPort = setupPort;
 	}
 
-	@Autowired
+	//@Autowired
 	public void setPlayPort(int playPort) {
 		this.playPort = playPort;
 	}
 
-	public String getIp() {
-		return ip;
-	}
+	//public String getIp() {
+	//	return ip;
+	//}
 
 	public int getPort() {
 		return port;
@@ -89,5 +91,4 @@ public class RtspServer {
 	public int getSetupPort() {
 		return setupPort;
 	}
-
 }

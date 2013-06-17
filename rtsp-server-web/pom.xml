@@ -11,10 +11,10 @@
 		<relativePath></relativePath>
 	</parent>
 	<groupId>com.darkmi</groupId>
-	<artifactId>rtsp-server-mina</artifactId>
+	<artifactId>rtsp-server-web</artifactId>
 	<version>1.0.0</version>
-	<packaging>jar</packaging>
-	<name>RTSPServer By Mina</name>
+	<packaging>war</packaging>
+	<name>RTSP Server Web</name>
 
 	<!-- 项目属性 -->
 	<properties>
