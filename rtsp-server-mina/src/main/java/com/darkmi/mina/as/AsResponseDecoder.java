@@ -8,18 +8,17 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 public class AsResponseDecoder extends CumulativeProtocolDecoder {
 
 	public boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
-		if (in.remaining() > 0) { //�����ʱ����ȡ4�ֽ��ж���Ϣ����
+		if (in.remaining() > 0) {
 			
-			//ǰ�ĸ��ֽ�Ϊ��Ϣ����
+	
 			byte[] sizeBytes = new byte[4];
-			in.mark();//��ǵ�ǰλ�ã��Ա�reset
-			in.get(sizeBytes);//��ȡǰ4�ֽ�
+			in.mark();
 			int size = NumberUtil.byteArrayToInt(sizeBytes);
 			
-			//�����Ϣ���ݵĳ��Ȳ�����ֱ�ӷ���true
-			if (size > in.remaining()) { //�����Ϣ���ݲ����������ã��൱�ڲ���ȡsize
+
+			if (size > in.remaining()) { 
 				in.reset();
-				return false;//��������ݣ���ƴ�ճ��������
+				return false;
 			} else {
 			
 				byte[] bytes = new byte[size];
@@ -33,11 +32,11 @@ public class AsResponseDecoder extends CumulativeProtocolDecoder {
 						out.write(resCmd);
 					}
 				}
-				if (in.remaining() > 0) { //����ȡ���ݺ�ճ�˰���ø����ٸ�һ�Σ�������һ�ν���
+				if (in.remaining() > 0) {
 					return true;
 				}
 			}
 		}
-		return false;//����ɹ����ø�����н����¸���
+		return false;
 	}
 }

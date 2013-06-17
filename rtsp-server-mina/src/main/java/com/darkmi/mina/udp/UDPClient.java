@@ -33,6 +33,7 @@ public class UDPClient {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				@SuppressWarnings("unused")
 				IoSession session = future.getSession();
 				System.out.println("++++++++++++++++++++++++++++");
 			}
