@@ -4,7 +4,6 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.darkmi.server.rtsp.RtspCode;
@@ -83,13 +82,11 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	 * 处理OPTIONS命令.
 	 */
 	private void onRequestOptions(IoSession session, RtspRequest request) {
-		logger.debug("vvs Options begin { ");
 		RtspResponse response = new RtspResponse();
 		response.setHeader(RtspHeaderCode.Public, "DESCRIBE, SETUP, TEARDOWN");
 		response.setHeader(RtspHeaderCode.Server, "MediaHawk");
 		response.setHeader(RtspHeaderCode.ContentLength, "0");
 		session.write(response);
-		logger.debug("vvs Options end } ");
 	}
 
 	/**
@@ -136,17 +133,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//		//获取SRM分配的资源
-		//		RtspTransport rtspTransport = null;
-		//		try {
-		//			if (REQUIRE_VALUE_HFC.equalsIgnoreCase(requireValue)) {
-		//				rtspTransport = new RtspTransport(strTransport, VideoTypeEnum.CCUR, TransportTypeEnum.REQUEST);
-		//			} else if (REQUIRE_VALUE_NGOD_R2.equalsIgnoreCase(requireValue)) {
-		//				rtspTransport = new RtspTransport(strTransport, VideoTypeEnum.DILU, TransportTypeEnum.REQUEST);
-		//			}
-		//		} catch (Exception e) {
-		//			logger.error(e.toString());
-		//		}
 		//获取destination
 		String destination = "";
 		if (null == destination || "".equals(destination)) {
@@ -280,18 +266,18 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 
 	/*-----------Setter And Getter --------------*/
 
-	@Autowired
-	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
-		this.sessionAccessor = sessionAccessor;
-	}
-
-	@Autowired
-	public void setVvsIpAddress(String vvsIpAddress) {
-		this.vvsIpAddress = vvsIpAddress;
-	}
-
-	@Autowired
-	public void setPlayPort(int playPort) {
-		this.playPort = playPort;
-	}
+//	@Autowired
+//	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
+//		this.sessionAccessor = sessionAccessor;
+//	}
+//
+//	@Autowired
+//	public void setVvsIpAddress(String vvsIpAddress) {
+//		this.vvsIpAddress = vvsIpAddress;
+//	}
+//
+//	@Autowired
+//	public void setPlayPort(int playPort) {
+//		this.playPort = playPort;
+//	}
 }

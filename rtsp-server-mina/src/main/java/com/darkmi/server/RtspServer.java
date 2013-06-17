@@ -11,17 +11,21 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.darkmi.server.rtsp.MessageCodecFactory;
 
 /**
  * 启动555端口.
  */
+@Component
 public class RtspServer {
 	private static Logger logger = LoggerFactory.getLogger(RtspServer.class);
 	private static final int MIN_READ_BUFFER_SIZE = 4096;
 	private RtspMessageHandler messageHandler;
 	private IoAcceptor acceptor;
+	private String ip;
+	private int port;
 	private int setupPort;
 	private int playPort;
 
@@ -46,13 +50,44 @@ public class RtspServer {
 
 	/*-----------   Setters   --------------*/
 
+	public void setMessageHandler(RtspMessageHandler messageHandler) {
+		this.messageHandler = messageHandler;
+	}
+
 	@Autowired
-	public void setSetupMessageHandler(RtspMessageHandler setupMessageHandler) {
-		this.messageHandler = setupMessageHandler;
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	@Autowired
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	@Autowired
 	public void setSetupPort(int setupPort) {
 		this.setupPort = setupPort;
 	}
+
+	@Autowired
+	public void setPlayPort(int playPort) {
+		this.playPort = playPort;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public int getPlayPort() {
+		return playPort;
+	}
+
+	public int getSetupPort() {
+		return setupPort;
+	}
+
 }
