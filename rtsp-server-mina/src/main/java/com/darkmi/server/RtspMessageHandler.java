@@ -10,6 +10,8 @@ import com.darkmi.server.rtsp.RtspCode;
 import com.darkmi.server.rtsp.RtspHeaderCode;
 import com.darkmi.server.rtsp.RtspRequest;
 import com.darkmi.server.rtsp.RtspResponse;
+import com.darkmi.server.rtsp.RtspUrl;
+import com.darkmi.server.rtsp.RtspRequest.Verb;
 import com.darkmi.server.session.RtspSession;
 import com.darkmi.server.session.RtspSessionAccessor;
 import com.darkmi.server.session.RtspSessionKeyFactory;
@@ -22,6 +24,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	private static final String CSEQ = "cseq";
 	private static final String REQUIRE_VALUE_HFC = "HFC.Delivery.Profile.1.0";
 	private static final String REQUIRE_VALUE_NGOD_R2 = "com.comcast.ngod.r2";
+	public static final String IO_SESSION_KEY = "io_session_key";
 	private RtspSessionAccessor sessionAccessor;
 	private static RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
 	private String vvsIpAddress;
@@ -50,6 +53,18 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			break;
 		case TEARDOWN:
 			onRequestTeardown(session, request);
+			break;
+		case PLAY:
+			onRequestPlay(session, request);
+			break;
+		case PAUSE:
+			onRequestPause(session, request);
+			break;
+		case GET_PARAMETER:
+			onRequestGP(session, request);
+			break;
+		case ANNOUNCE:
+			onRequestAnnounce(request);
 			break;
 		default:
 			onDefaultRequest(session, request, request.getHeader(RtspHeaderCode.CSeq));
@@ -245,6 +260,172 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	}
 
 	/**
+	 * 处理PLAY命令.
+	 */
+	private void onRequestPlay(IoSession session, RtspRequest request) {
+		logger.debug("vvs handle PLAY request begin { ");
+		//获取cesq
+		String cseq = request.getHeader(RtspHeaderCode.CSeq);
+		if (null == cseq || "".equals(cseq)) {
+			logger.error("cesq is null.");
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//获取sessionKey
+		String sessionKey = request.getHeader(RtspHeaderCode.Session);
+		if (null == sessionKey || "".equals(sessionKey)) {
+			logger.error("sessionKey is null.");
+			handleError(session, cseq, RtspCode.SessionNotFound);
+		}
+
+		//获取session
+		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
+		if (null == rtspSession) {
+			logger.error("rtspSession is null.");
+			handleError(session, cseq, RtspCode.SessionNotFound);
+		} else {
+			//保存IO_SESSION_ID
+			rtspSession.setAttribute(IO_SESSION_KEY, session);
+			//构造响应
+			RtspResponse response = new RtspResponse();
+			response.setCode(RtspCode.OK);
+			response.setHeader(RtspHeaderCode.CSeq, cseq);
+			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
+			response.setHeader(RtspHeaderCode.Session, sessionKey);
+			//range处理
+			String rangeValue = request.getHeader("Range");
+			if (null != rangeValue) {
+				String[] rangeValues = rangeValue.split("=");
+				response.setHeader(RtspHeaderCode.Range, "npt=" + rangeValues[1] + "233.800");
+			} else {
+				response.setHeader(RtspHeaderCode.Range, "npt=0.000-233.800");
+			}
+			//scale处理
+			String scale = request.getHeader(RtspHeaderCode.Scale);
+			if (null != scale) {
+				response.setHeader(RtspHeaderCode.Scale, scale);
+			} else {
+				response.setHeader(RtspHeaderCode.Scale, "1.00");
+			}
+			session.write(response);
+		}
+		logger.debug("vvs handle PLAY request end } ");
+	}
+
+	/**
+	 * 处理PAUSE命令.
+	 */
+	private void onRequestPause(IoSession session, RtspRequest request) {
+		logger.debug("vvs handle PAUSE request begin { ");
+		//获取cesq
+		String cseq = request.getHeader(RtspHeaderCode.CSeq);
+		if (null == cseq || "".equals(cseq)) {
+			logger.error("cesq is null.");
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//获取sessionKey
+		String sessionKey = request.getHeader(RtspHeaderCode.Session);
+		if (null == sessionKey || "".equals(sessionKey)) {
+			logger.error("sessionKey is null.");
+			handleError(session, cseq, RtspCode.SessionNotFound);
+		}
+
+		//获取session
+		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
+		if (null == rtspSession) {
+			logger.error("rtspSession is null.");
+			handleError(session, cseq, RtspCode.SessionNotFound);
+		} else {
+			//保存IO_SESSION_ID
+			rtspSession.setAttribute(IO_SESSION_KEY, session);
+			//构造响应
+			RtspResponse response = new RtspResponse();
+			response.setCode(RtspCode.OK);
+			response.setHeader(RtspHeaderCode.CSeq, cseq);
+			response.setHeader(RtspHeaderCode.Require, "HFC.Delivery.Profile.1.0");
+			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
+			response.setHeader(RtspHeaderCode.Session, sessionKey);
+			response.setHeader(RtspHeaderCode.Scale, "1.00");
+			//range处理
+			String rangeValue = request.getHeader("Range");
+			if (null != rangeValue) {
+				String[] rangeValues = rangeValue.split("=");
+				response.setHeader(RtspHeaderCode.Range, "npt=" + rangeValues[1] + "233.800");
+			} else {
+				response.setHeader(RtspHeaderCode.Range, "npt=0.000-233.800");
+			}
+
+			session.write(response);
+
+			//暂停5毫秒再发送ANNOUNCE
+			//try {
+			//	Thread.sleep(5);
+			//} catch (InterruptedException e) {
+			//		logger.error(e.getMessage());
+			//}
+
+			//发送暂停ANNOUNCE
+			RtspRequest announceReq = new RtspRequest();
+			announceReq.setVerb(Verb.ANNOUNCE);
+			announceReq.setUrl(new RtspUrl("rtsp://192.168.14.220:8060/movie---26---bianfuxiaqianchuan").toString());
+			announceReq.setHeader(RtspHeaderCode.CSeq, cseq);
+			announceReq.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
+			announceReq.setHeader(RtspHeaderCode.Session, sessionKey);
+			announceReq.setHeader(RtspHeaderCode.Notice, "1103 \"Stream Stalled\" event-date=20000406T091645Z");
+			session.write(announceReq);
+		}
+		logger.debug("vvs handle PAUSE request end } ");
+	}
+
+	/**
+	 * 处理GET_PARAMETER命令.
+	 */
+	private void onRequestGP(IoSession session, RtspRequest request) {
+		logger.debug("vvs handle GET_PARAMETER request begin { ");
+		//获取cesq
+		String cseq = request.getHeader(RtspHeaderCode.CSeq);
+		if (null == cseq || "".equals(cseq)) {
+			logger.error("cesq is null.");
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//获取sessionKey
+		String sessionKey = request.getHeader(RtspHeaderCode.Session);
+		if (null == sessionKey || "".equals(sessionKey)) {
+			logger.debug("sessionKey is null.");
+			handleError(session, cseq, RtspCode.SessionNotFound);
+		}
+
+		//获取session
+		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
+		if (null == rtspSession) {
+			handleError(session, cseq, RtspCode.SessionNotFound);
+		} else {
+			//保存IO_SESSION_ID
+			rtspSession.setAttribute(IO_SESSION_KEY, session);
+			//构造响应
+			RtspResponse response = new RtspResponse();
+			response.setCode(RtspCode.OK);
+			response.setHeader(RtspHeaderCode.CSeq, cseq);
+			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
+			response.setHeader(RtspHeaderCode.Session, sessionKey);
+			session.write(response);
+		}
+		logger.debug("vvs handle GET_PARAMETER request end } ");
+	}
+
+	/**
+	 * 处理ANNOUNCE命令.
+	 */
+	private void onRequestAnnounce(RtspRequest request) {
+
+	}
+
+	/**
 	 * 默认处理.
 	 */
 	private void onDefaultRequest(IoSession session, RtspRequest request, String cseq) {
@@ -266,18 +447,18 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 
 	/*-----------Setter And Getter --------------*/
 
-//	@Autowired
-//	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
-//		this.sessionAccessor = sessionAccessor;
-//	}
-//
-//	@Autowired
-//	public void setVvsIpAddress(String vvsIpAddress) {
-//		this.vvsIpAddress = vvsIpAddress;
-//	}
-//
-//	@Autowired
-//	public void setPlayPort(int playPort) {
-//		this.playPort = playPort;
-//	}
+	//	@Autowired
+	//	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
+	//		this.sessionAccessor = sessionAccessor;
+	//	}
+	//
+	//	@Autowired
+	//	public void setVvsIpAddress(String vvsIpAddress) {
+	//		this.vvsIpAddress = vvsIpAddress;
+	//	}
+	//
+	//	@Autowired
+	//	public void setPlayPort(int playPort) {
+	//		this.playPort = playPort;
+	//	}
 }
