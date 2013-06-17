@@ -122,8 +122,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	 * @return
 	 */
 	private void onRequestSetup(IoSession session, RtspRequest request) {
-		logger.debug("vvs handle SETUP request begin { ");
-
 		//获取cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
@@ -212,7 +210,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			//发送响应
 			session.write(response);
 		}
-		logger.debug("vvs handle SETUP request end } ");
 	}
 
 	/**

@@ -1,0 +1,82 @@
+~~~~~~~~~~~~~~~~~~~~~~ 
+
+SETUP rtsp://192.168.7.134:555/movie---2142---movie_387 RTSP/1.0
+CSeq: 1
+Require: HFC.Delivery.Profile.1.0
+Transport: MP2T/AVP;destination=192.168.14.102;port=49156;unicast
+
+
+RTSP/1.0 200 OK
+CSeq: 1
+Date: 12 Dec 2011 06:28:54 GMT
+Session: 49462271-1196354595;timeout=60
+Transport: MP2T/AVP;unicast;destination=192.168.14.102;port=49156
+Range: npt=-233.800
+Location: rtsp://192.168.7.134:8070/movie---2142---movie_387
+
+
+~~~~~~~~~~~~~~~~~~~~~~
+
+PLAY rtsp://192.168.7.134:8070/movie---2142---movie_387 RTSP/1.0
+CSeq: 2
+Require: HFC.Delivery.Profile.1.0
+Scale: 1
+Session: 50461426-5737916562
+
+
+RTSP/1.0 200 OK
+CSeq: 2
+Date: 12 Dec 2011 06:30:46 GMT
+Session: 50461426-5737916562
+Range: npt=0.000-233.800
+Scale: 1
+
+~~~~~~~~~~~~~~~~~~~~~~
+
+PAUSE rtsp://192.168.7.134:8070/movie---2142---movie_387 RTSP/1.0
+CSeq: 2
+Require: HFC.Delivery.Profile.1.0
+Session: 50461426-5737916562
+
+RTSP/1.0 200 OK
+CSeq: 2
+Require: HFC.Delivery.Profile.1.0
+Date: 12 Dec 2011 06:32:05 GMT
+Session: 50461426-5737916562
+Scale: 1.00
+Range: npt=0.000-233.800
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~
+
+
+TEARDOWN rtsp://192.168.7.134:555/movie---2142---movie_387 RTSP/1.0
+CSeq: 1
+Date: 12 Dec 2011 06:32:12 GMT
+Session: 50461426-5737916562
+
+
+
+RTSP/1.0 200 OK
+CSeq: 1
+Date: 12 Dec 2011 06:32:12 GMT
+Location: rtsp://192.168.7.134:555/movie---2142---movie_387
+Session: 50461426-5737916562
+
+~~~~~~~~~~~~~~~~~~~~~~
+
+GET_PARAMETER rtsp://192.168.14.195:8060/wodeyuandianying RTSP/1.0
+Cseq: 4
+Require: HFC.Delivery.Profile.1.0
+Date: 29 Jul 2010 09:41:31 GMT
+Session: 10735304-5266945
+User-Agent: No Autodiscovery
+
+
+响应：
+
+RTSP/1.0 200 OK
+CSeq: 4
+Date: 29 Jul 2010 09:39:40 GMT
+Session: 10735304-5266945

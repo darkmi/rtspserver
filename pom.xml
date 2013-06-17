@@ -31,6 +31,5 @@
 		<module>rtsp-server-parent</module>
 		<module>rtsp-server-mina</module>
 		<module>rtsp-server-netty</module>
-		<module>rtsp-server-client-rcp</module>
 	</modules>
 </project>

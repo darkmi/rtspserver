@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.darkmi.vvs.core.RtspController;
+import com.darkmi.server.core.RtspController;
 
 
 /**
