@@ -5,11 +5,6 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
-/**
- * 编码器.
- * @author mxh
- *
- */
 public class RtspEncoder extends ProtocolEncoderAdapter {
 	//private static Logger logger = LoggerFactory.getLogger(RtspEncoder.class);
 	@Override

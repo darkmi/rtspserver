@@ -2,12 +2,6 @@ package com.darkmi.server.rtsp;
 
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Description:Location 
- * Copyright (c) 永新视博
- * All Rights Reserved.
- * @version 1.0  2012-02-01 下午01:55:38 Mxh created
- */
 public class RtspLocation {
 
 	private String protocol;
@@ -38,7 +32,6 @@ public class RtspLocation {
 
 	@Override
 	public String toString() {
-
 		return protocol + "://" + host + ":" + port + "/" + uri;
 	}
 

@@ -6,9 +6,6 @@ package com.darkmi.server.util;
  * method. If a permit issued by this issuer expires before it is renewed, all
  * <code>PermitExpirationListener</code>s associated with this issuer are notified of
  * the expiry.
- * Copyright (c) 永新视博
- * All Rights Reserved.
- * @version 1.0  2011-3-15 上午11:11:32 MiXiaohui created
  */
 public interface TimedPermitIssuer {
 

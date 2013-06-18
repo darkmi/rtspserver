@@ -7,20 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import com.darkmi.server.rtsp.RtspRequest.Verb;
 
-
 /**
  * rtsp response.
  */
 public class RtspResponse extends RtspMessage {
-
 	private static Logger logger = LoggerFactory.getLogger(RtspResponse.class);
-
 	RtspCode code;
 	Verb requestVerb = Verb.None;
 
-	/**
-	 * 默认构造函数
-	 */
 	public RtspResponse() {
 		super();
 		code = RtspCode.OK;

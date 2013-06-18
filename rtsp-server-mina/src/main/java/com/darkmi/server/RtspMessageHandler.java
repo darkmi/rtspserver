@@ -4,14 +4,16 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.darkmi.server.rtsp.RtspCode;
 import com.darkmi.server.rtsp.RtspHeaderCode;
 import com.darkmi.server.rtsp.RtspRequest;
-import com.darkmi.server.rtsp.RtspResponse;
-import com.darkmi.server.rtsp.RtspUrl;
 import com.darkmi.server.rtsp.RtspRequest.Verb;
+import com.darkmi.server.rtsp.RtspResponse;
+import com.darkmi.server.rtsp.RtspTransport;
+import com.darkmi.server.rtsp.RtspUrl;
 import com.darkmi.server.session.RtspSession;
 import com.darkmi.server.session.RtspSessionAccessor;
 import com.darkmi.server.session.RtspSessionKeyFactory;
@@ -146,21 +148,13 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//获取destination
-		String destination = "";
-		if (null == destination || "".equals(destination)) {
-			logger.error("destination is null.");
-			handleError(session, cseq, RtspCode.UnsupportedTransport);
-			return;
-		}
-		//获取port
-		int port = 1;
+		RtspTransport transport = new RtspTransport(strTransport);
 
-		//------------------------
-		//
-		//省略,驱动底层向IPQAM推流.
-		//
-		//------------------------
+		//获取destination
+		String destination = transport.getDestination();
+
+		//获取port
+		int port = transport.getPort();
 
 		//创建session并记录使用资源
 		String sessionKey = keyFactory.createSessionKey();
@@ -444,10 +438,10 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 
 	/*-----------Setter And Getter --------------*/
 
-	//	@Autowired
-	//	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
-	//		this.sessionAccessor = sessionAccessor;
-	//	}
+	@Autowired
+	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
+		this.sessionAccessor = sessionAccessor;
+	}
 	//
 	//	@Autowired
 	//	public void setVvsIpAddress(String vvsIpAddress) {

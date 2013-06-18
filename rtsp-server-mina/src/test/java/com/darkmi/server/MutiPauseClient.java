@@ -1,10 +1,5 @@
 package com.darkmi.server;
 
-/**
- * 并发测试TEARDOWN
- * @author MiXiaohui
- *
- */
 public class MutiPauseClient {
 
 	/**

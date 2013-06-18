@@ -31,9 +31,9 @@ public class RtspServer {
 		acceptor.setHandler(messageHandler);
 		acceptor.getSessionConfig().setMinReadBufferSize(MIN_READ_BUFFER_SIZE);
 		try {
-			acceptor.bind(new InetSocketAddress(ip,setupPort));
-			acceptor.bind(new InetSocketAddress(ip,playPort));
-			logger.debug("RTSP Server start, setupport={}, playport={}", setupPort, playPort);
+			acceptor.bind(new InetSocketAddress(ip, setupPort));
+			acceptor.bind(new InetSocketAddress(ip, playPort));
+			logger.debug("RTSP Server start, ip={" + ip + "}, setupport={}, playport={}", setupPort, playPort);
 		} catch (IOException e) {
 			logger.warn("bind port error...", e);
 		}

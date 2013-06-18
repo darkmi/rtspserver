@@ -19,7 +19,6 @@ import org.springframework.util.Assert;
  * @author slaton
  */
 public class ReflectionUtils {
-
 	private static Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
 
 	/**

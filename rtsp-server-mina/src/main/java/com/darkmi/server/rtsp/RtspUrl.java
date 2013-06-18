@@ -4,24 +4,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Description:RTSP URL 
- * Copyright (c) 永新视博
- * All Rights Reserved.
- * @version 1.0  2011-3-4 下午01:55:38 laojiang created
- */
 public class RtspUrl {
+	private static Logger logger = LoggerFactory.getLogger(RtspUrl.class);
 	private String protocol;
 	private String host;
 	private Integer port;
 	private String uri;
-	private static Logger logger = LoggerFactory.getLogger(RtspUrl.class);
 
-	/**
-	 * 默认构造函数
-	 */
 	public RtspUrl() {
-
 	}
 
 	public RtspUrl(String url) {
@@ -47,14 +37,14 @@ public class RtspUrl {
 
 				host = urlTail.split("/")[0];
 				logger.debug("host --> " + host);
-				if (urlTail.contains(":")) { //指定端口
+				if (urlTail.contains(":")) {
 					host = urlTail.split(":")[0];
 					String hostTail = urlTail.split(":")[1];
 					if (hostTail.contains("/")) {
 						port = Integer.parseInt(hostTail.split("/")[0]);
 						uri = hostTail.split("/")[1];
 					}
-				} else { //未指定端口,即使用默认端口
+				} else {
 					host = urlTail.split("/")[0];
 					uri = urlTail.split("/")[1];
 				}
