@@ -24,7 +24,6 @@ public class RtspServer {
 	private int playPort;
 
 	public void start() {
-
 		acceptor = new NioSocketAcceptor(Runtime.getRuntime().availableProcessors() + 1);
 		acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MessageCodecFactory()));
 		acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));

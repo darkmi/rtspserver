@@ -7,7 +7,10 @@ public class Main {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ServerConfig.class);
 		RtspServer rtspServer = (RtspServer) ctx.getBean(RtspServer.class);
-		rtspServer.setMessageHandler(ctx.getBean(RtspMessageHandler.class));
+		RtspMessageHandler handler = ctx.getBean(RtspMessageHandler.class);
+		handler.setIp(rtspServer.getIp());
+		handler.setPlayPort(rtspServer.getPlayPort());
+		rtspServer.setMessageHandler(handler);
 		rtspServer.start();
 	}
 }

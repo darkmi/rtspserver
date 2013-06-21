@@ -29,20 +29,14 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	public static final String IO_SESSION_KEY = "io_session_key";
 	private RtspSessionAccessor sessionAccessor;
 	private static RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
-	private String vvsIpAddress;
+	private String ip;
 	private int playPort;
 
-	/**
-	 * 接收到数据,进行处理.
-	 */
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
-		logger.debug("vvs 接收到客户端请求:\n{}", message);
+		logger.debug("RTSP Server Receive Message: \n{}", message);
 		RtspRequest request = (RtspRequest) message;
-
-		//保存cseq
 		session.setAttribute(CSEQ, request.getHeader(RtspHeaderCode.CSeq));
-
 		switch (request.getVerb()) {
 		case OPTIONS:
 			onRequestOptions(session, request);
@@ -71,33 +65,19 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		default:
 			onDefaultRequest(session, request, request.getHeader(RtspHeaderCode.CSeq));
 		}
-
-		//由SRM关闭
-		//session.close(true);
 	}
 
-	/**
-	 * 捕捉到异常,进行处理.
-	 */
 	public void exceptionCaught(IoSession session, Throwable cause) {
-		logger.debug("vvs(554) exceptionCaught begin { ");
 		logger.error(cause.getMessage(), cause);
-
-		//获取cseq
 		String cseq = (String) session.getAttribute(CSEQ);
 		if (null == cseq || "".equals(cseq)) {
 			handleError(session, "0", RtspCode.InternalServerError);
 		} else {
 			handleError(session, cseq, RtspCode.InternalServerError);
 		}
-
 		//session.close(true);
-		logger.debug("vvs(554) exceptionCaught end } ");
 	}
 
-	/**
-	 * 处理OPTIONS命令.
-	 */
 	private void onRequestOptions(IoSession session, RtspRequest request) {
 		RtspResponse response = new RtspResponse();
 		response.setHeader(RtspHeaderCode.Public, "DESCRIBE, SETUP, TEARDOWN");
@@ -106,9 +86,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		session.write(response);
 	}
 
-	/**
-	 * 处理DESCRIBE命令.
-	 */
 	private void onRequestDescribe(IoSession session, RtspRequest request) {
 		logger.debug("vvs Describe begin { ");
 		RtspResponse response = new RtspResponse();
@@ -119,10 +96,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		logger.debug("vvs Describe end } ");
 	}
 
-	/**
-	 * 处理SETUP命令.
-	 * @return
-	 */
 	private void onRequestSetup(IoSession session, RtspRequest request) {
 		//获取cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
@@ -163,8 +136,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		rtspSession.setAttribute(destination + ":" + port, "USED");
 
 		if (REQUIRE_VALUE_HFC.equalsIgnoreCase(requireValue)) {
-			logger.debug("vvs返回HFC协议响应。。。。。。。。。。。。");
-			//构建返回给请求方的响应
+			logger.debug("Rtsp Server 返回HFC协议响应。。。。。。。。。。。。");
 			RtspResponse response = new RtspResponse();
 			response.setCode(RtspCode.OK);
 			response.setHeader(RtspHeaderCode.CSeq, cseq);
@@ -172,7 +144,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			response.setHeader(RtspHeaderCode.Session, sessionKey + ";timeout=60");
 			response.setHeader(RtspHeaderCode.Transport, "");
 			response.setHeader(RtspHeaderCode.Range, "npt=0-233.800");
-			String location = "rtsp://" + vvsIpAddress + ":" + playPort + "/";
+			String location = "rtsp://" + ip + ":" + playPort + "/";
 			response.setHeader(RtspHeaderCode.Location, location);
 			session.write(response);
 		} else if (REQUIRE_VALUE_NGOD_R2.equalsIgnoreCase(requireValue)) {
@@ -191,10 +163,10 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			//set sdp extension
 			StringBuffer sdp = new StringBuffer();
 			sdp.append("v=0\r\n");
-			sdp.append("o=- " + sessionKey + " 1339005446 IN IP4 " + vvsIpAddress + "\r\n");
+			sdp.append("o=- " + sessionKey + " 1339005446 IN IP4 " + ip + "\r\n");
 			sdp.append("s=RTSP Session\r\n");
 			sdp.append("t=0 0\r\n");
-			sdp.append("a=control:rtsp://" + vvsIpAddress + ":" + playPort + "/" + sessionKey + "\r\n");
+			sdp.append("a=control:rtsp://" + ip + ":" + playPort + "/" + sessionKey + "\r\n");
 			sdp.append("c=IN IP4 0.0.0.0\r\n");
 			sdp.append("m=video 0 RTP/AVP 33\r\n");
 
@@ -206,9 +178,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		}
 	}
 
-	/**
-	 * 处理TEARDOWN命令.
-	 */
 	private void onRequestTeardown(IoSession session, RtspRequest request) {
 		logger.debug("vvs handle TEARDOWN request begin { ");
 		//获取cesq
@@ -250,9 +219,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		logger.debug("vvs handle TEARDOWN request end } ");
 	}
 
-	/**
-	 * 处理PLAY命令.
-	 */
 	private void onRequestPlay(IoSession session, RtspRequest request) {
 		logger.debug("vvs handle PLAY request begin { ");
 		//获取cesq
@@ -304,9 +270,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		logger.debug("vvs handle PLAY request end } ");
 	}
 
-	/**
-	 * 处理PAUSE命令.
-	 */
 	private void onRequestPause(IoSession session, RtspRequest request) {
 		logger.debug("vvs handle PAUSE request begin { ");
 		//获取cesq
@@ -371,9 +334,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		logger.debug("vvs handle PAUSE request end } ");
 	}
 
-	/**
-	 * 处理GET_PARAMETER命令.
-	 */
 	private void onRequestGP(IoSession session, RtspRequest request) {
 		logger.debug("vvs handle GET_PARAMETER request begin { ");
 		//获取cesq
@@ -409,16 +369,10 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		logger.debug("vvs handle GET_PARAMETER request end } ");
 	}
 
-	/**
-	 * 处理ANNOUNCE命令.
-	 */
 	private void onRequestAnnounce(RtspRequest request) {
 
 	}
 
-	/**
-	 * 默认处理.
-	 */
 	private void onDefaultRequest(IoSession session, RtspRequest request, String cseq) {
 		RtspResponse response = new RtspResponse();
 		response.setCode(RtspCode.BadRequest);
@@ -442,14 +396,12 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	public void setSessionAccessor(RtspSessionAccessor sessionAccessor) {
 		this.sessionAccessor = sessionAccessor;
 	}
-	//
-	//	@Autowired
-	//	public void setVvsIpAddress(String vvsIpAddress) {
-	//		this.vvsIpAddress = vvsIpAddress;
-	//	}
-	//
-	//	@Autowired
-	//	public void setPlayPort(int playPort) {
-	//		this.playPort = playPort;
-	//	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public void setPlayPort(int playPort) {
+		this.playPort = playPort;
+	}
 }
