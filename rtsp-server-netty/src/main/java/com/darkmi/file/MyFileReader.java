@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 
 public class MyFileReader {
 
+	@SuppressWarnings("resource")
 	public static void read() throws IOException {
 
 		String fileName = "C:\\java\\EclipStudy\\workplace\\perf4jone\\src\\main\\java\\com\\darkmi\\file\\93.log";

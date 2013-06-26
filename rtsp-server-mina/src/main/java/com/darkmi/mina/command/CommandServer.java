@@ -37,7 +37,7 @@ public class CommandServer {
 		try {
 			acceptor.bind(new InetSocketAddress("192.168.7.134", 9123));
 		} catch (IOException e) {
-			logger.warn("�󶨶˿ڴ���", e);
+			logger.warn("", e);
 		}
 	}
 

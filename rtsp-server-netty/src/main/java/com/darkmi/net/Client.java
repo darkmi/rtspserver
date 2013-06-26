@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class Client extends JFrame implements ActionListener {
 	Socket sock; //定义套接字对象
 	JTextArea t1 = new JTextArea();
@@ -82,6 +83,7 @@ public class Client extends JFrame implements ActionListener {
 	}
 
 	public static void main(String args[]) {
+		@SuppressWarnings("unused")
 		Client mainFrame = new Client();
 	}
 }
