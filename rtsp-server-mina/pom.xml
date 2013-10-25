@@ -9,9 +9,8 @@
 		<version>1.0.0</version>
 		<relativePath></relativePath>
 	</parent>
-	<groupId>com.darkmi</groupId>
+
 	<artifactId>rtsp-server-mina</artifactId>
-	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>RTSPServer By Mina</name>
 
@@ -85,6 +84,11 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<!-- testing end -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
