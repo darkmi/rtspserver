@@ -21,7 +21,7 @@ public class MinaTCPServer {
 		acceptor.getSessionConfig().setMinReadBufferSize(2048);
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 35);
 		try {
-			acceptor.bind(new InetSocketAddress("192.168.7.134", 8060));
+			acceptor.bind(new InetSocketAddress("172.0.0.1", 8060));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

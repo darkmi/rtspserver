@@ -15,4 +15,10 @@ public class ClientHandler extends IoHandlerAdapter {
 	public void sessionOpened(IoSession session) {
 		session.write(values);
 	}
+
+	@Override
+	public void messageReceived(IoSession session, Object message) throws Exception {
+		System.out.println("Server send --> " + message);
+	}
+
 }

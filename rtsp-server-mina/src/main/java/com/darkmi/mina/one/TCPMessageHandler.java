@@ -17,6 +17,7 @@ public class TCPMessageHandler extends IoHandlerAdapter {
 			session.close(true);
 			return;
 		}
+		System.out.println("Client send --> " + str);
 		session.write(str.toUpperCase());
 	}
 

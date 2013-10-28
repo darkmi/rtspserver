@@ -14,6 +14,7 @@ public class MyClient {
 		connector.setConnectTimeoutMillis(30000);
 		ProtocolCodecFilter myFilter = new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8")));
 		connector.getFilterChain().addLast("codec", myFilter);
-		connector.connect(new InetSocketAddress("192.168.7.134", 554));
+		connector.setHandler(new ClientHandler("mixiaohui"));
+		connector.connect(new InetSocketAddress("127.0.0.1", 554));
 	}
 }
