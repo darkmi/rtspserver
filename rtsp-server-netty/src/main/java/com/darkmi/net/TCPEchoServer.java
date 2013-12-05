@@ -29,22 +29,22 @@ public class TCPEchoServer {
 
 		int servPort = 444;
 
-		//1.´´½¨Ò»¸öServerSocketÊµÀı²¢Ö¸¶¨±¾µØ¶Ë¿Ú¡£´ËÌ×½Ó×ÖµÄ¹¦ÄÜÊÇÕìÌı±¾µØ¶Ë¿ÚÊÕµ½µÄÁ¬½Ó¡£
+		//1.åˆ›å»ºä¸€ä¸ªServerSocketå®ä¾‹å¹¶æŒ‡å®šæœ¬åœ°ç«¯å£ã€‚æ­¤å¥—æ¥å­—çš„åŠŸèƒ½æ˜¯ä¾¦å¬æœ¬åœ°ç«¯å£æ”¶åˆ°çš„è¿æ¥ã€‚
 		ServerSocket servSock = new ServerSocket(servPort);
 
 		//int recvMsgSize;
 
 		byte[] receiveBuf = new byte[BUFSIZE];
 
-		//2.ÖØ¸´Ö´ĞĞ
+		//2.é‡å¤æ‰§è¡Œ
 		while (true) {
-			//a.µ÷ÓÃServerSocketµÄaccept()·½·¨ÒÔ»ñÈ¡ÏÂÒ»¸ö¿Í»§¶ËÁ¬½Ó¡£
-			//»ùÓÚĞÂ½¨Á¢µÄ¿Í»§¶ËÁ¬½Ó£¬´´½¨Ò»¸öSocketÊµÀı£¬²¢ÓÉaccept()·½·¨·µ»Ø
+			//a.è°ƒç”¨ServerSocketçš„accept()æ–¹æ³•ä»¥è·å–ä¸‹ä¸€ä¸ªå®¢æˆ·ç«¯è¿æ¥ã€‚
+			//åŸºäºæ–°å»ºç«‹çš„å®¢æˆ·ç«¯è¿æ¥ï¼Œåˆ›å»ºä¸€ä¸ªSocketå®ä¾‹ï¼Œå¹¶ç”±accept()æ–¹æ³•è¿”å›
 			Socket clntSock = servSock.accept();
 			SocketAddress clientAddress = clntSock.getRemoteSocketAddress();
 			System.out.println("Handling client at " + clientAddress);
 
-			//b,Ê¹ÓÃËù·µ»ØµÄSocketÊµÀıµÄInputStreamºÍOutputStreamÓë¿Í»§¶Ë½øĞĞÍ¨ĞÅ
+			//b,ä½¿ç”¨æ‰€è¿”å›çš„Socketå®ä¾‹çš„InputStreamå’ŒOutputStreamä¸å®¢æˆ·ç«¯è¿›è¡Œé€šä¿¡
 			InputStream in = clntSock.getInputStream();
 			OutputStream out = clntSock.getOutputStream();
 
@@ -53,7 +53,7 @@ public class TCPEchoServer {
 				out.write(sb.toString().getBytes());
 			}
 
-			//c£¬Í¨ĞÅÍê³Éºó£¬Ê¹ÓÃSocketµÄclose()·½·¨¹Ø±Õ¸Ã¿Í»§¶ËÌ×½Ó×ÖÁ´½Ó
+			//cï¼Œé€šä¿¡å®Œæˆåï¼Œä½¿ç”¨Socketçš„close()æ–¹æ³•å…³é—­è¯¥å®¢æˆ·ç«¯å¥—æ¥å­—é“¾æ¥
 			clntSock.close();
 		}
 	}
