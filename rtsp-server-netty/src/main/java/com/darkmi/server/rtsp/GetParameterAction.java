@@ -16,8 +16,8 @@ import com.darkmi.server.session.RtspSession;
 import com.darkmi.util.DateUtil;
 
 /**
- * 处理心跳请求.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class GetParameterAction implements Callable<HttpResponse> {

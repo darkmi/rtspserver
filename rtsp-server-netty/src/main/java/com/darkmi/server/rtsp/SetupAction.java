@@ -18,8 +18,8 @@ import com.darkmi.server.session.RtspSession;
 import com.darkmi.util.DateUtil;
 
 /**
- * 处理SETUP请求.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class SetupAction implements Callable<HttpResponse> {

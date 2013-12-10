@@ -9,6 +9,11 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
+/**
+ * 
+ * @author darkmi
+ *
+ */
 public class RtspRequestHandler extends SimpleChannelUpstreamHandler {
 	Logger logger = Logger.getLogger(RtspRequestHandler.class);
 	private final RtspServerStackImpl rtspServerStackImpl;

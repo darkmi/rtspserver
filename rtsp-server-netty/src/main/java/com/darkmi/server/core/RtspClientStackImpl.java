@@ -14,6 +14,11 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
+/**
+ * 
+ * @author darkmi
+ *
+ */
 public class RtspClientStackImpl implements RtspStack {
 	private static Logger logger = Logger.getLogger(RtspClientStackImpl.class);
 	private final String address;

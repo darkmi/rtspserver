@@ -14,8 +14,8 @@ import com.darkmi.server.core.RtspController;
 
 
 /**
- * 处理PAUSE请求.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class AnnounceAction implements Callable<HttpRequest> {

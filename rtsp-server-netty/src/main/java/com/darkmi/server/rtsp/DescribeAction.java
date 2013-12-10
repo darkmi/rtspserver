@@ -14,8 +14,8 @@ import org.jboss.netty.handler.codec.rtsp.RtspVersions;
 import com.darkmi.server.core.RtspController;
 
 /**
- * 处理DESCRIBE请求.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class DescribeAction implements Callable<HttpResponse> {

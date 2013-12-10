@@ -17,8 +17,8 @@ import com.darkmi.server.session.RtspSession;
 import com.darkmi.util.DateUtil;
 
 /**
- * 处理PAUSE请求.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class PauseAction implements Callable<HttpResponse> {

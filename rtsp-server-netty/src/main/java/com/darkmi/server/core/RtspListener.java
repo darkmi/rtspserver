@@ -5,8 +5,8 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
 /**
- * RTSP监听器.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public interface RtspListener {

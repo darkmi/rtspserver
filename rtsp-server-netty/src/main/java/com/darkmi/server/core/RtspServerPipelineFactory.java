@@ -7,6 +7,11 @@ import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.jboss.netty.handler.codec.rtsp.RtspRequestDecoder;
 
+/**
+ * 
+ * @author darkmi
+ *
+ */
 public class RtspServerPipelineFactory implements ChannelPipelineFactory {
 
 	private final RtspServerStackImpl rtspServerStackImpl;

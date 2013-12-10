@@ -15,8 +15,8 @@ import com.darkmi.server.core.RtspController;
 
 
 /**
- * 处理Option请求.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class OptionsAction implements Callable<HttpResponse> {

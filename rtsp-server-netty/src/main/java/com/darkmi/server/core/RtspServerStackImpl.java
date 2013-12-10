@@ -20,8 +20,8 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
 /**
- * 服务器类.
- * @author MiXiaohui
+ * 
+ * @author darkmi
  *
  */
 public class RtspServerStackImpl implements RtspStack {

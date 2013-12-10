@@ -30,8 +30,8 @@ import com.darkmi.server.session.SimpleRandomKeyFactory;
 
 
 /**
- * 视频服务器启动类.
- * @author MiXiaohui.
+ * 
+ * @author darkmi
  *
  */
 public class RtspController implements RtspListener {

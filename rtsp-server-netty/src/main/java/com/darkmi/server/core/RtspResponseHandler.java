@@ -5,6 +5,11 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
+/**
+ * 
+ * @author darkmi
+ *
+ */
 public class RtspResponseHandler extends SimpleChannelUpstreamHandler {
 
 	private final RtspClientStackImpl rtspClientStackImpl;
