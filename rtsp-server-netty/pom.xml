@@ -9,9 +9,7 @@
 		<version>1.0.0</version>
 		<relativePath></relativePath>
 	</parent>
-	<groupId>com.darkmi</groupId>
 	<artifactId>rtsp-server-netty</artifactId>
-	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>RTSPServer By Netty</name>
 
