@@ -26,17 +26,6 @@
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://10.10.20.201:8081/nexus/content/groups/public</url>
-		</repository>
-
-		<repository>
-			<id>3rd</id>
-			<name>3rd Repository</name>
-			<url>http://10.10.20.201:8081/nexus/content/repositories/thirdparty/</url>
-		</repository>
 
 		<repository>
 			<id>offical</id>
