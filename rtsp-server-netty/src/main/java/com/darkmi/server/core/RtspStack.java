@@ -1,6 +1,6 @@
 package com.darkmi.server.core;
 
-import org.jboss.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 
 /**
  * main interface.
@@ -18,5 +18,5 @@ public interface RtspStack {
 
 	public void setRtspListener(RtspListener listener);
 
-	public void sendRquest(HttpRequest rtspRequest, String host, int port);
+	public void sendRequest(HttpRequest rtspRequest, String host, int port);
 }

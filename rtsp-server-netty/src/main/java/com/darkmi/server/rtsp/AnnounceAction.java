@@ -1,14 +1,15 @@
 package com.darkmi.server.rtsp;
 
+import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.rtsp.RtspHeaders;
+import io.netty.handler.codec.rtsp.RtspMethods;
+import io.netty.handler.codec.rtsp.RtspVersions;
+
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
-import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
-import org.jboss.netty.handler.codec.rtsp.RtspHeaders;
-import org.jboss.netty.handler.codec.rtsp.RtspMethods;
-import org.jboss.netty.handler.codec.rtsp.RtspVersions;
 
 import com.darkmi.server.core.RtspController;
 
@@ -32,14 +33,14 @@ public class AnnounceAction implements Callable<HttpRequest> {
 	@Override
 	public HttpRequest call() throws Exception {
 		HttpRequest request = null;
-		String uri = "rtsp://192.168.14.220:8060/movie---26---bianfuxiaqianchuan";
-		request = new DefaultHttpRequest(RtspVersions.RTSP_1_0, RtspMethods.ANNOUNCE, uri);
-		request.setHeader(RtspHeaders.Names.CSEQ, "111");
-		request.setHeader(RtspHeaders.Names.DATE, null);
-		String sessionKey = response.getHeader(RtspHeaders.Names.SESSION);
-		request.setHeader(RtspHeaders.Names.SESSION, sessionKey);
-		request.setHeader("Notice", "1103 \"Stream Stalled\" event-date=20000406T091645Z");
-		logger.debug("setup request is --> " + request.toString());
+//		String uri = "rtsp://192.168.14.220:8060/movie---26---bianfuxiaqianchuan";
+//		request = new DefaultHttpRequest(RtspVersions.RTSP_1_0, RtspMethods.ANNOUNCE, uri);
+//		request.setHeader(RtspHeaders.Names.CSEQ, "111");
+//		request.setHeader(RtspHeaders.Names.DATE, null);
+//		String sessionKey = response.getHeader(RtspHeaders.Names.SESSION);
+//		request.setHeader(RtspHeaders.Names.SESSION, sessionKey);
+//		request.setHeader("Notice", "1103 \"Stream Stalled\" event-date=20000406T091645Z");
+//		logger.debug("setup request is --> " + request.toString());
 		return request;
 	}
 

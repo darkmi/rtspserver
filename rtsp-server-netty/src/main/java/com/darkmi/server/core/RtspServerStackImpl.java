@@ -1,23 +1,18 @@
 package com.darkmi.server.core;
 
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.ChannelGroupFuture;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 
 /**
  * 
@@ -29,17 +24,13 @@ public class RtspServerStackImpl implements RtspStack {
 	private final String address;
 	private final InetAddress inetAddress;
 	private final int port;
-	private Channel channel = null;
-	private ServerBootstrap bootstrap = null;
 	private RtspListener listener = null;
-	static final ChannelGroup allChannels = new DefaultChannelGroup("MediaHawk");
 
-	/**
-	 * 构造函数
-	 * @param address
-	 * @param port
-	 * @throws UnknownHostException
-	 */
+	private static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors() * 2;
+	private static final int BIZTHREADSIZE = 4;
+	private static final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZGROUPSIZE);
+	private static final EventLoopGroup workerGroup = new NioEventLoopGroup(BIZTHREADSIZE);
+
 	public RtspServerStackImpl(String address, int port) throws UnknownHostException {
 		this.address = address;
 		this.port = port;
@@ -47,52 +38,39 @@ public class RtspServerStackImpl implements RtspStack {
 	}
 
 	@Override
-	public String getAddress() {
-		return this.address;
-	}
-
-	@Override
-	public int getPort() {
-		return this.port;
-	}
-
-	/**
-	 * 启动服务器.
-	 */
-	@Override
 	public void start() {
-		InetSocketAddress bindAddress = new InetSocketAddress(this.inetAddress, this.port);
-		bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(
-				Executors.newCachedThreadPool(new RtspServerBossThreadFactory()),
-				Executors.newCachedThreadPool(new RtspServerWorkerThreadFactory())));
+		try {
+			InetSocketAddress bindAddress = new InetSocketAddress(this.inetAddress, this.port);
+			ServerBootstrap server = new ServerBootstrap();
+			server.group(bossGroup, workerGroup);
+			server.channel(NioServerSocketChannel.class);
+			server.childHandler(new RtspServerPipelineFactory(this).getPipeline());
+			server.bind(bindAddress).sync();
+		} catch (InterruptedException e) {
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(new RtspServerPipelineFactory(this));
-
+		//bootstrap.setPipelineFactory(new RtspServerPipelineFactory(this));
 		// Bind and start to accept incoming connections.
-		channel = bootstrap.bind(bindAddress);
-		allChannels.add(channel);
-		logger.info("Supter-Novel RTSP Server started and bound to " + bindAddress.toString());
+		//channel = bootstrap.bind(bindAddress);
+		//allChannels.add(channel);
+
+		logger.info("ODRM Start.");
 	}
 
-	/**
-	 * 关闭服务器.
-	 */
 	@Override
 	public void stop() {
-		ChannelGroupFuture future = allChannels.close();
-		future.awaitUninterruptibly();
-		bootstrap.getFactory().releaseExternalResources();
+		//		ChannelGroupFuture future = allChannels.close();
+		//		future.awaitUninterruptibly();
+		//		bootstrap.getFactory().releaseExternalResources();
 	}
 
 	@Override
-	public void setRtspListener(RtspListener listener) {
-		this.listener = listener;
-
-	}
-
-	@Override
-	public void sendRquest(HttpRequest rtspRequest, String host, int port) {
+	public void sendRequest(HttpRequest rtspRequest, String host, int port) {
 		throw new UnsupportedOperationException("Not Supported yet");
 	}
 
@@ -108,33 +86,31 @@ public class RtspServerStackImpl implements RtspStack {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private class ServerChannelFutureListener implements ChannelFutureListener {
-		public void operationComplete(ChannelFuture arg0) throws Exception {
-			logger.info("Mobicents RTSP Server Stop complete");
-		}
+	@Override
+	public void setRtspListener(RtspListener listener) {
+		this.listener = listener;
+	}
+
+	@Override
+	public String getAddress() {
+		return this.address;
+	}
+
+	@Override
+	public int getPort() {
+		return this.port;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			RtspStack server = new RtspServerStackImpl("localhost", 554);
+			server.start();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} 
 	}
 
 }
 
-class RtspServerBossThreadFactory implements ThreadFactory {
-	public static final AtomicLong sequence = new AtomicLong(0);
-	private ThreadGroup factoryTG = new ThreadGroup("RtspServerBossThreadGroup[" + sequence.incrementAndGet() + "]");
 
-	public Thread newThread(Runnable r) {
-		Thread t = new Thread(this.factoryTG, r);
-		t.setPriority(Thread.NORM_PRIORITY);
-		return t;
-	}
-}
 
-class RtspServerWorkerThreadFactory implements ThreadFactory {
-	public static final AtomicLong sequence = new AtomicLong(0);
-	private ThreadGroup factoryTG = new ThreadGroup("RtspServerWorkerThreadGroup[" + sequence.incrementAndGet() + "]");
-
-	public Thread newThread(Runnable r) {
-		Thread t = new Thread(this.factoryTG, r);
-		t.setPriority(Thread.NORM_PRIORITY);
-		return t;
-	}
-}

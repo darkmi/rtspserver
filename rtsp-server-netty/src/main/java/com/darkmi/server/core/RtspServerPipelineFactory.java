@@ -1,18 +1,17 @@
 package com.darkmi.server.core;
 
-import static org.jboss.netty.channel.Channels.pipeline;
-
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
-import org.jboss.netty.handler.codec.rtsp.RtspRequestDecoder;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.rtsp.RtspRequestDecoder;
+import io.netty.handler.codec.rtsp.RtspResponseEncoder;
 
 /**
  * 
  * @author darkmi
  *
  */
-public class RtspServerPipelineFactory implements ChannelPipelineFactory {
+public class RtspServerPipelineFactory {
 
 	private final RtspServerStackImpl rtspServerStackImpl;
 
@@ -20,12 +19,15 @@ public class RtspServerPipelineFactory implements ChannelPipelineFactory {
 		this.rtspServerStackImpl = rtspServerStackImpl;
 	}
 
-	public ChannelPipeline getPipeline() throws Exception {
-		// Create a default pipeline implementation.
-		ChannelPipeline pipeline = pipeline();
-		pipeline.addLast("decoder", new RtspRequestDecoder());
-		pipeline.addLast("encoder", new HttpResponseEncoder());
-		pipeline.addLast("handler", new RtspRequestHandler(this.rtspServerStackImpl));
-		return pipeline;
+	public ChannelInitializer<SocketChannel> getPipeline() throws Exception {
+		return new ChannelInitializer<SocketChannel>() {
+			@Override
+			public void initChannel(SocketChannel ch) throws Exception {
+				ChannelPipeline pipeline = ch.pipeline();
+				pipeline.addLast("decoder", new RtspRequestDecoder());
+				pipeline.addLast("encoder", new RtspResponseEncoder());
+				pipeline.addLast("handler", new RtspRequestHandler(rtspServerStackImpl));
+			}
+		};
 	}
 }

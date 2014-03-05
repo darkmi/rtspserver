@@ -1,16 +1,14 @@
 package com.darkmi.server.core;
 
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.handler.codec.http.HttpResponse;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
  * 
  * @author darkmi
  *
  */
-public class RtspResponseHandler extends SimpleChannelUpstreamHandler {
+public class RtspResponseHandler extends ChannelInboundHandlerAdapter {
 
 	private final RtspClientStackImpl rtspClientStackImpl;
 
@@ -19,8 +17,20 @@ public class RtspResponseHandler extends SimpleChannelUpstreamHandler {
 	}
 
 	@Override
-	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-		HttpResponse rtspResponse = (HttpResponse) e.getMessage();
-		rtspClientStackImpl.processRtspResponse(rtspResponse);
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		super.channelRead(ctx, msg);
 	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		super.exceptionCaught(ctx, cause);
+	}
+
+//	@Override
+//	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+//		HttpResponse rtspResponse = (HttpResponse) e.getMessage();
+//		rtspClientStackImpl.processRtspResponse(rtspResponse);
+//	}
+	
+	
 }
