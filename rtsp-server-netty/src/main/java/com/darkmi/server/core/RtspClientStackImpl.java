@@ -61,6 +61,7 @@ public class RtspClientStackImpl implements RtspStack {
 		//channel.close();
 		//cf.awaitUninterruptibly();
 		//bootstrap.getFactory().releaseExternalResources();
+
 	}
 
 	protected void processRtspResponse(HttpResponse rtspResponse) {

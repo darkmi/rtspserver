@@ -22,11 +22,11 @@ public class RtspRequestHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		logger.debug("msg 接收到客户端请求 ========> " + msg);
-		if (msg instanceof DefaultHttpRequest) {
-			DefaultHttpRequest rtspMessage = (DefaultHttpRequest) msg;
+		if(msg instanceof DefaultHttpRequest){
+			DefaultHttpRequest rtspMessage = (DefaultHttpRequest)msg;
 			logger.debug("rtspMessage 接收到客户端请求 ========> " + rtspMessage);
-			rtspServerStackImpl.processRtspRequest(rtspMessage, ctx);
-		} else {
+			rtspServerStackImpl.processRtspRequest(rtspMessage,ctx);
+		}else{
 			logger.debug("读取HTTP/RTSP请求的Content...........");
 		}
 

@@ -6,6 +6,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
 
 public class RtspClientHandler extends SimpleChannelInboundHandler<Object> {
+
 	private static final Logger logger = Logger.getLogger(RtspClientHandler.class);
 
 	@Override

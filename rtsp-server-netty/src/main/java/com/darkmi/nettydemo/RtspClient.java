@@ -12,10 +12,8 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.rtsp.RtspHeaders;
 import io.netty.handler.codec.rtsp.RtspMethods;
-import io.netty.handler.codec.rtsp.RtspRequestDecoder;
 import io.netty.handler.codec.rtsp.RtspRequestEncoder;
 import io.netty.handler.codec.rtsp.RtspResponseDecoder;
-import io.netty.handler.codec.rtsp.RtspResponseEncoder;
 import io.netty.handler.codec.rtsp.RtspVersions;
 
 import org.apache.log4j.Logger;
@@ -92,6 +90,5 @@ public class RtspClient {
 			e.printStackTrace();
 		}
 	}
-
 
 }
