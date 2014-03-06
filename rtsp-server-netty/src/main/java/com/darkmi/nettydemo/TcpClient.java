@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 public class TcpClient {
 	private static final Logger logger = Logger.getLogger(TcpClient.class);
-	public static String HOST = "127.0.0.1";
+	public static String HOST = "192.168.14.116";
 	public static int PORT = 9999;
 	public static Bootstrap bootstrap = getBootstrap();
 	public static Channel channel = getChannel(HOST, PORT);

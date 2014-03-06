@@ -1,7 +1,7 @@
 package com.darkmi.server.core;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -31,10 +31,14 @@ public class RtspServerStackImpl implements RtspStack {
 	private static final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZGROUPSIZE);
 	private static final EventLoopGroup workerGroup = new NioEventLoopGroup(BIZTHREADSIZE);
 
+	//public RtspServerStackImpl(){
+	//	
+	//}
+	
 	public RtspServerStackImpl(String address, int port) throws UnknownHostException {
 		this.address = address;
 		this.port = port;
-		inetAddress = InetAddress.getByName(this.address);
+		this.inetAddress = InetAddress.getByName(this.address);
 	}
 
 	@Override
@@ -74,9 +78,9 @@ public class RtspServerStackImpl implements RtspStack {
 		throw new UnsupportedOperationException("Not Supported yet");
 	}
 
-	protected void processRtspRequest(HttpRequest rtspRequest, Channel channel) {
+	protected void processRtspRequest(HttpRequest rtspRequest,ChannelHandlerContext ctx) {
 		synchronized (this.listener) {
-			listener.onRtspRequest(rtspRequest, channel);
+			listener.onRtspRequest(rtspRequest, ctx);
 		}
 	}
 
@@ -103,7 +107,7 @@ public class RtspServerStackImpl implements RtspStack {
 	
 	public static void main(String[] args) {
 		try {
-			RtspStack server = new RtspServerStackImpl("localhost", 554);
+			RtspStack server = new RtspServerStackImpl("192.168.14.116", 554);
 			server.start();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

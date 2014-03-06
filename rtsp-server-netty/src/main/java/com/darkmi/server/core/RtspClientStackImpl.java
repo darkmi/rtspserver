@@ -3,6 +3,7 @@ package com.darkmi.server.core;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
@@ -44,18 +45,18 @@ public class RtspClientStackImpl implements RtspStack {
 
 	public void start() {
 
-//		InetSocketAddress bindAddress = new InetSocketAddress(this.inetAddress, this.port);
-//
-//		// Configure the client.
-//		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-//				Executors.newCachedThreadPool()));
-//
-//		bootstrap.setOption("localAddress", bindAddress);
-//
-//		// Set up the event pipeline factory.
-//		bootstrap.setPipelineFactory(new RtspClientPipelineFactory(this));
-//
-//		logger.info("Mobicents RTSP Client started and bound to " + bindAddress.toString());
+		//		InetSocketAddress bindAddress = new InetSocketAddress(this.inetAddress, this.port);
+		//
+		//		// Configure the client.
+		//		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
+		//				Executors.newCachedThreadPool()));
+		//
+		//		bootstrap.setOption("localAddress", bindAddress);
+		//
+		//		// Set up the event pipeline factory.
+		//		bootstrap.setPipelineFactory(new RtspClientPipelineFactory(this));
+		//
+		//		logger.info("Mobicents RTSP Client started and bound to " + bindAddress.toString());
 
 	}
 
@@ -65,19 +66,19 @@ public class RtspClientStackImpl implements RtspStack {
 		}
 	}
 
-	protected void processRtspRequest(HttpRequest rtspRequest, Channel channel) {
+	protected void processRtspRequest(HttpRequest rtspRequest, ChannelHandlerContext ctx) {
 		synchronized (this.listener) {
-			listener.onRtspRequest(rtspRequest, channel);
+			listener.onRtspRequest(rtspRequest, ctx);
 		}
 	}
 
 	public void stop() {
-//		ChannelFuture cf = channel.getCloseFuture();
-//		cf.addListener(new ClientChannelFutureListener());
-//
-//		channel.close();
-//		cf.awaitUninterruptibly();
-//		bootstrap.getFactory().releaseExternalResources();
+		//		ChannelFuture cf = channel.getCloseFuture();
+		//		cf.addListener(new ClientChannelFutureListener());
+		//
+		//		channel.close();
+		//		cf.awaitUninterruptibly();
+		//		bootstrap.getFactory().releaseExternalResources();
 
 	}
 
@@ -96,21 +97,21 @@ public class RtspClientStackImpl implements RtspStack {
 
 	public void sendRequest(HttpRequest rtspRequest, String host, int port) {
 
-//		ChannelFuture future = null;
-//		if (channel == null || (channel != null && !channel.isConnected())) {
-//			// Start the connection attempt.
-//			future = bootstrap.connect(new InetSocketAddress(host, port));
-//		}
-//
-//		// Wait until the connection attempt succeeds or fails.
-//		channel = future.awaitUninterruptibly().getChannel();
-//		if (!future.isSuccess()) {
-//			future.getCause().printStackTrace();
-//			// bootstrap.releaseExternalResources();
-//			return;
-//		}
-//
-//		channel.write(rtspRequest);
+		//		ChannelFuture future = null;
+		//		if (channel == null || (channel != null && !channel.isConnected())) {
+		//			// Start the connection attempt.
+		//			future = bootstrap.connect(new InetSocketAddress(host, port));
+		//		}
+		//
+		//		// Wait until the connection attempt succeeds or fails.
+		//		channel = future.awaitUninterruptibly().getChannel();
+		//		if (!future.isSuccess()) {
+		//			future.getCause().printStackTrace();
+		//			// bootstrap.releaseExternalResources();
+		//			return;
+		//		}
+		//
+		//		channel.write(rtspRequest);
 	}
 
 }

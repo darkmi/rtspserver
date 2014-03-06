@@ -1,9 +1,8 @@
 package com.darkmi.server.core;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
+import io.netty.handler.codec.http.DefaultHttpRequest;
 
 import org.apache.log4j.Logger;
 
@@ -26,19 +25,15 @@ public class RtspRequestHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		//super.channelRead(ctx, msg);
-		try {
-			if (msg instanceof ByteBuf) {
-				ByteBuf byteBuf = (ByteBuf) msg;
-				byte[] b = new byte[byteBuf.capacity()];
-				byteBuf.getBytes(0, b);
-				logger.info("RTSP Request \n" + new String(b));
-				
-				
-			}
-		} finally {
-			 ReferenceCountUtil.release(msg);
+		logger.debug("msg 接收到客户端请求 ========> " + msg);
+		if(msg instanceof DefaultHttpRequest){
+			DefaultHttpRequest rtspMessage = (DefaultHttpRequest)msg;
+			logger.debug("rtspMessage 接收到客户端请求 ========> " + rtspMessage);
+			rtspServerStackImpl.processRtspRequest(rtspMessage,ctx);
+		}else{
+			logger.debug("读取HTTP/RTSP请求的Content...........");
 		}
+
 	}
 
 	@Override

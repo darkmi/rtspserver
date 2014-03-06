@@ -1,6 +1,8 @@
 package com.darkmi.server.rtsp;
 
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -14,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.darkmi.server.core.RtspController;
-import com.darkmi.server.session.RtspSession;
 import com.darkmi.util.DateUtil;
 
 /**
@@ -26,27 +27,28 @@ public class SetupAction implements Callable<HttpResponse> {
 	private static Logger logger = LoggerFactory.getLogger(SetupAction.class);
 	private final RtspController rtspController;
 	private final HttpRequest request;
-	private static final String REQUIRE_VALUE_HFC = "HFC.Delivery.Profile.1.0";
-	private static final String REQUIRE_VALUE_NGOD_R2 = "com.comcast.ngod.r2";
+
+	//private static final String REQUIRE_VALUE_HFC = "HFC.Delivery.Profile.1.0";
+	//private static final String REQUIRE_VALUE_NGOD_R2 = "com.comcast.ngod.r2";
 
 	public SetupAction(RtspController rtspController, HttpRequest request, String remoteIp) {
 		this.rtspController = rtspController;
 		this.request = request;
 	}
 
-	@SuppressWarnings("deprecation")
 	public HttpResponse call() throws Exception {
-		HttpResponse response = null;
+		FullHttpResponse response = null;
 
-		//		//获取cesq
-		//		String cseq = request.getHeader(RtspHeaders.Names.CSEQ);
-		//		if (null == cseq || "".equals(cseq)) {
-		//			logger.error("cesq is null.");
-		//			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
-		//			response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
-		//			response.setHeader(RtspHeaders.Names.CSEQ, this.request.getHeader(RtspHeaders.Names.CSEQ));
-		//			return response;
-		//		}
+		//获取cesq
+		String cseq = request.headers().get(RtspHeaders.Names.CSEQ);
+		if (null == cseq || "".equals(cseq)) {
+			logger.error("cesq is null.");
+			//response = new FullHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
+			response = new DefaultFullHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
+			response.headers().set(HttpHeaders.Names.SERVER, RtspController.SERVER);
+			response.headers().set(RtspHeaders.Names.CSEQ, request.headers().get(RtspHeaders.Names.CSEQ));
+			return response;
+		}
 		//
 		//		//根据require选择相应协议(HFC or NGOD)
 		//		String requireVale = request.getHeader(RtspHeaders.Names.REQUIRE);
@@ -58,15 +60,15 @@ public class SetupAction implements Callable<HttpResponse> {
 		//			return response;
 		//		}
 		//
-		//		//获取Transport
-		//		String strTransport = request.getHeader(RtspHeaders.Names.TRANSPORT);
-		//		if (null == strTransport || strTransport.equals("")) {
-		//			logger.error("strTransport is null.");
-		//			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
-		//			response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
-		//			response.setHeader(RtspHeaders.Names.CSEQ, this.request.getHeader(RtspHeaders.Names.CSEQ));
-		//			return response;
-		//		}
+		//获取Transport
+		String strTransport = request.headers().get(RtspHeaders.Names.TRANSPORT);
+		if (null == strTransport || strTransport.equals("")) {
+			logger.error("strTransport is null.");
+			response = new DefaultFullHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
+			response.headers().set(HttpHeaders.Names.SERVER, RtspController.SERVER);
+			response.headers().set(RtspHeaders.Names.CSEQ, this.request.headers().get(RtspHeaders.Names.CSEQ));
+			return response;
+		}
 		//
 		//		//		//获取SRM分配的资源
 		//		//		RtspTransport rtspTransport = null;
@@ -117,15 +119,16 @@ public class SetupAction implements Callable<HttpResponse> {
 		//			logger.debug("vvs返回NGOD协议响应。。。。。。。。。。。。");
 		//			//构建返回给请求方的响应
 		//
-		//			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
-		//			response.setHeader(RtspHeaders.Names.CSEQ, cseq);
-		//			response.setHeader(HttpHeaders.Names.DATE, DateUtil.getGmtDate());
-		//			response.setHeader(RtspHeaders.Names.SESSION, sessionKey + ";timeout=60");
-		//			//response.setHeader(RtspHeaders.Names.OnDemandSessionId, request.getHeader(RtspHeaderCode.OnDemandSessionId));
-		//			response.setHeader(RtspHeaders.Names.TRANSPORT, "");
-		//			response.setHeader(RtspHeaders.Names.RANGE, "npt=0-233.800");
-		//			response.setHeader(RtspHeaders.Names.CONTENT_TYPE, "application/sdp");
-		//
+		
+		response = new DefaultFullHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
+		response.headers().set(RtspHeaders.Names.CSEQ, cseq);
+		response.headers().set(HttpHeaders.Names.DATE, DateUtil.getGmtDate());
+		response.headers().set(RtspHeaders.Names.SESSION, "aaa" + ";timeout=60");
+		//response.setHeader(RtspHeaders.Names.OnDemandSessionId, request.getHeader(RtspHeaderCode.OnDemandSessionId));
+		response.headers().set(RtspHeaders.Names.TRANSPORT, "");
+		response.headers().set(RtspHeaders.Names.RANGE, "npt=0-233.800");
+		response.headers().set(RtspHeaders.Names.CONTENT_TYPE, "application/sdp");
+
 		//			//set sdp extension
 		//			StringBuffer sdp = new StringBuffer();
 		//			sdp.append("v=0\r\n");
