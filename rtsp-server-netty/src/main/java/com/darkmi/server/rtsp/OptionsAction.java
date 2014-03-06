@@ -1,7 +1,11 @@
 package com.darkmi.server.rtsp;
 
+import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.rtsp.RtspHeaders;
+import io.netty.handler.codec.rtsp.RtspResponseStatuses;
+import io.netty.handler.codec.rtsp.RtspVersions;
 
 import java.util.concurrent.Callable;
 
@@ -12,8 +16,6 @@ import java.util.concurrent.Callable;
  */
 public class OptionsAction implements Callable<HttpResponse> {
 	private HttpRequest request = null;
-//	public final static String OPTIONS = RtspMethods.DESCRIBE.getName() + ", " + RtspMethods.SETUP.getName() + ", "
-//			+ RtspMethods.TEARDOWN.getName() + ", " + RtspMethods.PLAY.getName() + ", " + RtspMethods.OPTIONS.getName();
 
 	public OptionsAction(HttpRequest request) {
 		this.request = request;
@@ -21,10 +23,10 @@ public class OptionsAction implements Callable<HttpResponse> {
 
 	public HttpResponse call() throws Exception {
 		HttpResponse response = null;
-//		response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
-//		response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
-//		response.setHeader(RtspHeaders.Names.CSEQ, this.request.getHeader(RtspHeaders.Names.CSEQ));
-//		response.setHeader(RtspHeaders.Names.PUBLIC, OPTIONS);
+		response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
+		response.headers().add(RtspHeaders.Names.SERVER, "RtspServer");
+		response.headers().add(RtspHeaders.Names.CSEQ, this.request.headers().get(RtspHeaders.Names.CSEQ));
+		response.headers().add(RtspHeaders.Names.PUBLIC, "SETUP,PLAY,PAUSE,TEARDOWN");
 		return response;
 	}
 }

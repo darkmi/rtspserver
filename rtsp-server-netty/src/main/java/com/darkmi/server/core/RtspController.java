@@ -3,6 +3,7 @@ package com.darkmi.server.core;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.rtsp.RtspMethods;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
@@ -10,10 +11,10 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.darkmi.server.rtsp.OptionsAction;
 import com.darkmi.server.session.RtspSessionAccessor;
 import com.darkmi.server.session.RtspSessionKeyFactory;
 import com.darkmi.server.session.SimpleRandomKeyFactory;
-
 
 /**
  * 
@@ -79,55 +80,55 @@ public class RtspController implements RtspListener {
 	public void onRtspRequest(HttpRequest request, Channel channel) {
 		logger.debug("Receive request " + request);
 		Callable<HttpResponse> action = null;
-		Callable<HttpRequest> announceAction = null;
+		//Callable<HttpRequest> announceAction = null;
 		HttpResponse response = null;
-		HttpRequest announce = null;
-		
-//		try {
-//			if (request.getMethod().equals(RtspMethods.OPTIONS)) {
-//				action = new OptionsAction(request);
-//				response = action.call();
-//			} else if (request.getMethod().equals(RtspMethods.DESCRIBE)) {
-//				action = new DescribeAction(request);
-//				response = action.call();
-//			} else if (request.getMethod().equals(RtspMethods.SETUP)) {
-//				InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.getRemoteAddress();
-//				String remoteIp = inetSocketAddress.getAddress().getHostAddress();
-//				action = new SetupAction(this, request, remoteIp);
-//				response = action.call();
-//			} else if (request.getMethod().equals(RtspMethods.PLAY)) {
-//				action = new PlayAction(this, request);
-//				response = action.call();
-//			} else if (request.getMethod().equals(RtspMethods.PAUSE)) {
-//				action = new PauseAction(this, request);
-//				response = action.call();
-//				announceAction = new AnnounceAction(this, response);
-//				announce = announceAction.call();
-//
-//			} else if (request.getMethod().equals(RtspMethods.GET_PARAMETER)) {
-//				action = new GetParameterAction(this, request);
-//				response = action.call();
-//			} else if (request.getMethod().equals(RtspMethods.TEARDOWN)) {
-//				action = new TeardownAction(this, request);
-//				response = action.call();
-//			} else {
-//				response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.METHOD_NOT_ALLOWED);
-//				response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
-//				response.setHeader(RtspHeaders.Names.CSEQ, request.getHeader(RtspHeaders.Names.CSEQ));
-//				response.setHeader(RtspHeaders.Names.ALLOW, OptionsAction.OPTIONS);
-//			}
-//		} catch (Exception e) {
-//			logger.error("Unexpected error during processing,Caused by ", e);
-//			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
-//			response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
-//			response.setHeader(RtspHeaders.Names.CSEQ, request.getHeader(RtspHeaders.Names.CSEQ));
-//		}
-//		logger.debug("Sending Response: \n" + response.toString());
-//		channel.write(response);
-//		if (null != announce) {
-//			logger.debug("Sending Announce " + announce.toString());
-//			channel.write(announce);
-//		}
+		//HttpRequest announce = null;
+
+		try {
+			if (request.getMethod().equals(RtspMethods.OPTIONS)) {
+				action = new OptionsAction(request);
+				response = action.call();
+				//			} else if (request.getMethod().equals(RtspMethods.DESCRIBE)) {
+				//				action = new DescribeAction(request);
+				//				response = action.call();
+				//			} else if (request.getMethod().equals(RtspMethods.SETUP)) {
+				//				InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.getRemoteAddress();
+				//				String remoteIp = inetSocketAddress.getAddress().getHostAddress();
+				//				action = new SetupAction(this, request, remoteIp);
+				//				response = action.call();
+				//			} else if (request.getMethod().equals(RtspMethods.PLAY)) {
+				//				action = new PlayAction(this, request);
+				//				response = action.call();
+				//			} else if (request.getMethod().equals(RtspMethods.PAUSE)) {
+				//				action = new PauseAction(this, request);
+				//				response = action.call();
+				//				announceAction = new AnnounceAction(this, response);
+				//				announce = announceAction.call();
+				//
+				//			} else if (request.getMethod().equals(RtspMethods.GET_PARAMETER)) {
+				//				action = new GetParameterAction(this, request);
+				//				response = action.call();
+				//			} else if (request.getMethod().equals(RtspMethods.TEARDOWN)) {
+				//				action = new TeardownAction(this, request);
+				//				response = action.call();
+				//			} else {
+				//				response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.METHOD_NOT_ALLOWED);
+				//				response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
+				//				response.setHeader(RtspHeaders.Names.CSEQ, request.getHeader(RtspHeaders.Names.CSEQ));
+				//				response.setHeader(RtspHeaders.Names.ALLOW, OptionsAction.OPTIONS);
+			}
+		} catch (Exception e) {
+			//			logger.error("Unexpected error during processing,Caused by ", e);
+			//			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
+			//			response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
+			//			response.setHeader(RtspHeaders.Names.CSEQ, request.getHeader(RtspHeaders.Names.CSEQ));
+		}
+		logger.debug("Sending Response: \n" + response.toString());
+		channel.write(response);
+		//		if (null != announce) {
+		//			logger.debug("Sending Announce " + announce.toString());
+		//			channel.write(announce);
+		//		}
 	}
 
 	@Override
