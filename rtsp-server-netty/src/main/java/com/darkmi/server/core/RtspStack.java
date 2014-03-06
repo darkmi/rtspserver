@@ -8,6 +8,7 @@ import io.netty.handler.codec.http.HttpRequest;
  *
  */
 public interface RtspStack {
+	
 	public String getAddress();
 
 	public int getPort();

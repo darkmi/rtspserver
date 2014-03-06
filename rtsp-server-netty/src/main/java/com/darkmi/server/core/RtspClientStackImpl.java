@@ -1,15 +1,21 @@
 package com.darkmi.server.core;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.rtsp.RtspHeaders;
+import io.netty.handler.codec.rtsp.RtspMethods;
+import io.netty.handler.codec.rtsp.RtspVersions;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -20,18 +26,80 @@ import org.apache.log4j.Logger;
  */
 public class RtspClientStackImpl implements RtspStack {
 	private static Logger logger = Logger.getLogger(RtspClientStackImpl.class);
-	private final String address;
-	private final int port;
-	private final InetAddress inetAddress;
-	private Channel channel = null;
-	//private ClientBootstrap bootstrap;
+	private String address;
+	private int port;
+	//private final InetAddress inetAddress;
+	//private Channel channel = null;
+	private Bootstrap rtspClient;
 	private RtspListener listener = null;
+
+	public RtspClientStackImpl() {
+	}
 
 	public RtspClientStackImpl(String address, int port) throws UnknownHostException {
 		this.address = address;
 		this.port = port;
-		this.inetAddress = InetAddress.getByName(this.address);
+	}
 
+	public void start() {
+		EventLoopGroup group = new NioEventLoopGroup();
+		try {
+			rtspClient = new Bootstrap();
+			rtspClient.group(group).channel(NioSocketChannel.class)
+					.handler(new RtspClientPipelineFactory(this).getPipeline());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Shut down executor threads to exit.
+			group.shutdownGracefully();
+		}
+	}
+
+	public void stop() {
+		//ChannelFuture cf = channel.getCloseFuture();
+		//cf.addListener(new ClientChannelFutureListener());
+		//channel.close();
+		//cf.awaitUninterruptibly();
+		//bootstrap.getFactory().releaseExternalResources();
+	}
+
+	protected void processRtspResponse(HttpResponse rtspResponse) {
+		synchronized (this.listener) {
+			listener.onRtspResponse(rtspResponse);
+		}
+	}
+
+	protected void processRtspRequest(HttpRequest rtspRequest, ChannelHandlerContext ctx) {
+		synchronized (this.listener) {
+			listener.onRtspRequest(rtspRequest, ctx);
+		}
+	}
+
+	public void sendRequest(HttpRequest rtspRequest, String host, int port) {
+		Channel channel = connect(host, port);
+		// Send the HTTP request.
+		logger.debug("准备发送请求...");
+		channel.writeAndFlush(rtspRequest);
+		logger.debug("请求发送完毕...");
+		// Wait for the server to close the connection.
+		try {
+			channel.closeFuture().sync();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Channel connect(String ip, int port) {
+		// Make the connection attempt.
+		Channel ch = null;
+		try {
+			logger.debug("准备链接服务器...");
+			ch = rtspClient.connect(ip, port).sync().channel();
+			logger.debug("服务器连接成功...");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return ch;
 	}
 
 	public String getAddress() {
@@ -42,75 +110,23 @@ public class RtspClientStackImpl implements RtspStack {
 		return this.port;
 	}
 
-	public void start() {
-
-//		InetSocketAddress bindAddress = new InetSocketAddress(this.inetAddress, this.port);
-//
-//		// Configure the client.
-//		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-//				Executors.newCachedThreadPool()));
-//
-//		bootstrap.setOption("localAddress", bindAddress);
-//
-//		// Set up the event pipeline factory.
-//		bootstrap.setPipelineFactory(new RtspClientPipelineFactory(this));
-//
-//		logger.info("Mobicents RTSP Client started and bound to " + bindAddress.toString());
-
-	}
-
-	protected void processRtspResponse(HttpResponse rtspResponse) {
-		synchronized (this.listener) {
-			listener.onRtspResponse(rtspResponse);
-		}
-	}
-
-	protected void processRtspRequest(HttpRequest rtspRequest, Channel channel) {
-		synchronized (this.listener) {
-			listener.onRtspRequest(rtspRequest, channel);
-		}
-	}
-
-	public void stop() {
-//		ChannelFuture cf = channel.getCloseFuture();
-//		cf.addListener(new ClientChannelFutureListener());
-//
-//		channel.close();
-//		cf.awaitUninterruptibly();
-//		bootstrap.getFactory().releaseExternalResources();
-
-	}
-
 	public void setRtspListener(RtspListener listener) {
 		this.listener = listener;
-
 	}
 
-	private class ClientChannelFutureListener implements ChannelFutureListener {
+	public static void main(String[] args) throws UnknownHostException {
+		// Prepare the RTSP request.
+		StringBuffer url = new StringBuffer();
+		url.append("rtsp://").append("192.168.14.116").append(":").append(554);
 
-		public void operationComplete(ChannelFuture arg0) throws Exception {
-			logger.info("Mobicents RTSP Client Stop complete");
-		}
+		FullHttpRequest req = new DefaultFullHttpRequest(RtspVersions.RTSP_1_0, RtspMethods.SETUP, url.toString());
+		req.headers().set(RtspHeaders.Names.CSEQ, "10");
+		req.headers().set(RtspHeaders.Names.TRANSPORT, "MP2T/DVBC/QAM;unicast;client=00AF123456DE;qam_name=aaa");
+		logger.debug("=====> \n" + req);
+
+		RtspClientStackImpl client = new RtspClientStackImpl();
+		client.start();
+		client.sendRequest(req, "192.168.14.116", 554);
 
 	}
-
-	public void sendRequest(HttpRequest rtspRequest, String host, int port) {
-
-//		ChannelFuture future = null;
-//		if (channel == null || (channel != null && !channel.isConnected())) {
-//			// Start the connection attempt.
-//			future = bootstrap.connect(new InetSocketAddress(host, port));
-//		}
-//
-//		// Wait until the connection attempt succeeds or fails.
-//		channel = future.awaitUninterruptibly().getChannel();
-//		if (!future.isSuccess()) {
-//			future.getCause().printStackTrace();
-//			// bootstrap.releaseExternalResources();
-//			return;
-//		}
-//
-//		channel.write(rtspRequest);
-	}
-
 }

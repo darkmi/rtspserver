@@ -1,11 +1,7 @@
 package com.darkmi.server.rtsp;
 
-import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.rtsp.RtspHeaders;
-import io.netty.handler.codec.rtsp.RtspMethods;
-import io.netty.handler.codec.rtsp.RtspVersions;
 
 import java.util.concurrent.Callable;
 

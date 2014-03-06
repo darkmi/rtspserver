@@ -1,5 +1,7 @@
 package com.darkmi.server.core;
 
+import org.apache.log4j.Logger;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -9,7 +11,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  *
  */
 public class RtspResponseHandler extends ChannelInboundHandlerAdapter {
-
+	private static Logger logger = Logger.getLogger(RtspResponseHandler.class);
 	private final RtspClientStackImpl rtspClientStackImpl;
 
 	public RtspResponseHandler(RtspClientStackImpl rtspClientStackImpl) {
@@ -18,7 +20,7 @@ public class RtspResponseHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		super.channelRead(ctx, msg);
+		logger.debug("========> " + msg);
 	}
 
 	@Override
@@ -31,6 +33,4 @@ public class RtspResponseHandler extends ChannelInboundHandlerAdapter {
 //		HttpResponse rtspResponse = (HttpResponse) e.getMessage();
 //		rtspClientStackImpl.processRtspResponse(rtspResponse);
 //	}
-	
-	
 }
