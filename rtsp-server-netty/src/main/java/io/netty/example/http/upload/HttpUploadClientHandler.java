@@ -31,53 +31,53 @@ import java.util.logging.Logger;
  */
 public class HttpUploadClientHandler extends SimpleChannelInboundHandler<HttpObject> {
 
-    private static final Logger logger = Logger.getLogger(HttpUploadClientHandler.class.getName());
+	private static final Logger logger = Logger.getLogger(HttpUploadClientHandler.class.getName());
 
-    private boolean readingChunks;
+	private boolean readingChunks;
 
-    @Override
-    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        if (msg instanceof HttpResponse) {
-            HttpResponse response = (HttpResponse) msg;
+	@Override
+	public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+		if (msg instanceof HttpResponse) {
+			HttpResponse response = (HttpResponse) msg;
 
-            logger.info("STATUS: " + response.getStatus());
-            logger.info("VERSION: " + response.getProtocolVersion());
+			logger.info("STATUS: " + response.getStatus());
+			logger.info("VERSION: " + response.getProtocolVersion());
 
-            if (!response.headers().isEmpty()) {
-                for (String name : response.headers().names()) {
-                    for (String value : response.headers().getAll(name)) {
-                        logger.info("HEADER: " + name + " = " + value);
-                    }
-                }
-            }
+			if (!response.headers().isEmpty()) {
+				for (String name : response.headers().names()) {
+					for (String value : response.headers().getAll(name)) {
+						logger.info("HEADER: " + name + " = " + value);
+					}
+				}
+			}
 
-            if (response.getStatus().code() == 200 && HttpHeaders.isTransferEncodingChunked(response)) {
-                readingChunks = true;
-                logger.info("CHUNKED CONTENT {");
-            } else {
-                logger.info("CONTENT {");
-            }
-        }
-        if (msg instanceof HttpContent) {
-            HttpContent chunk = (HttpContent) msg;
-            logger.info(chunk.content().toString(CharsetUtil.UTF_8));
+			if (response.getStatus().code() == 200 && HttpHeaders.isTransferEncodingChunked(response)) {
+				readingChunks = true;
+				logger.info("CHUNKED CONTENT {");
+			} else {
+				logger.info("CONTENT {");
+			}
+		}
+		if (msg instanceof HttpContent) {
+			HttpContent chunk = (HttpContent) msg;
+			logger.info(chunk.content().toString(CharsetUtil.UTF_8));
 
-            if (chunk instanceof LastHttpContent) {
-                if (readingChunks) {
-                    logger.info("} END OF CHUNKED CONTENT");
-                } else {
-                    logger.info("} END OF CONTENT");
-                }
-                readingChunks = false;
-            } else {
-                logger.info(chunk.content().toString(CharsetUtil.UTF_8));
-            }
-        }
-    }
+			if (chunk instanceof LastHttpContent) {
+				if (readingChunks) {
+					logger.info("} END OF CHUNKED CONTENT");
+				} else {
+					logger.info("} END OF CONTENT");
+				}
+				readingChunks = false;
+			} else {
+				logger.info(chunk.content().toString(CharsetUtil.UTF_8));
+			}
+		}
+	}
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        ctx.channel().close();
-    }
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		cause.printStackTrace();
+		ctx.channel().close();
+	}
 }

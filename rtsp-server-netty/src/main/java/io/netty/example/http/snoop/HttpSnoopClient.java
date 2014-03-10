@@ -36,76 +36,70 @@ import java.net.URI;
  */
 public class HttpSnoopClient {
 
-    private final URI uri;
+	private final URI uri;
 
-    public HttpSnoopClient(URI uri) {
-        this.uri = uri;
-    }
+	public HttpSnoopClient(URI uri) {
+		this.uri = uri;
+	}
 
-    public void run() throws Exception {
-        String scheme = uri.getScheme() == null? "http" : uri.getScheme();
-        String host = uri.getHost() == null? "localhost" : uri.getHost();
-        int port = uri.getPort();
-        if (port == -1) {
-            if ("http".equalsIgnoreCase(scheme)) {
-                port = 80;
-            } else if ("https".equalsIgnoreCase(scheme)) {
-                port = 443;
-            }
-        }
+	public void run() throws Exception {
+		String scheme = uri.getScheme() == null ? "http" : uri.getScheme();
+		String host = uri.getHost() == null ? "localhost" : uri.getHost();
+		int port = uri.getPort();
+		if (port == -1) {
+			if ("http".equalsIgnoreCase(scheme)) {
+				port = 80;
+			} else if ("https".equalsIgnoreCase(scheme)) {
+				port = 443;
+			}
+		}
 
-        if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
-            System.err.println("Only HTTP(S) is supported.");
-            return;
-        }
+		if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
+			System.err.println("Only HTTP(S) is supported.");
+			return;
+		}
 
-        boolean ssl = "https".equalsIgnoreCase(scheme);
+		boolean ssl = "https".equalsIgnoreCase(scheme);
 
-        // Configure the client.
-        EventLoopGroup group = new NioEventLoopGroup();
-        try {
-            Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
-             .handler(new HttpSnoopClientInitializer(ssl));
+		// Configure the client.
+		EventLoopGroup group = new NioEventLoopGroup();
+		try {
+			Bootstrap b = new Bootstrap();
+			b.group(group).channel(NioSocketChannel.class).handler(new HttpSnoopClientInitializer(ssl));
 
-            // Make the connection attempt.
-            Channel ch = b.connect(host, port).sync().channel();
+			// Make the connection attempt.
+			Channel ch = b.connect(host, port).sync().channel();
 
-            // Prepare the HTTP request.
-            HttpRequest request = new DefaultFullHttpRequest(
-                    HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
-            request.headers().set(HttpHeaders.Names.HOST, host);
-            request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-            request.headers().set(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
+			// Prepare the HTTP request.
+			HttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
+			request.headers().set(HttpHeaders.Names.HOST, host);
+			request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
+			request.headers().set(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
 
-            // Set some example cookies.
-            request.headers().set(
-                    HttpHeaders.Names.COOKIE,
-                    ClientCookieEncoder.encode(
-                            new DefaultCookie("my-cookie", "foo"),
-                            new DefaultCookie("another-cookie", "bar")));
+			// Set some example cookies.
+			request.headers().set(
+					HttpHeaders.Names.COOKIE,
+					ClientCookieEncoder.encode(new DefaultCookie("my-cookie", "foo"), new DefaultCookie(
+							"another-cookie", "bar")));
 
-            // Send the HTTP request.
-            ch.writeAndFlush(request);
+			// Send the HTTP request.
+			ch.writeAndFlush(request);
 
-            // Wait for the server to close the connection.
-            ch.closeFuture().sync();
-        } finally {
-            // Shut down executor threads to exit.
-            group.shutdownGracefully();
-        }
-    }
+			// Wait for the server to close the connection.
+			ch.closeFuture().sync();
+		} finally {
+			// Shut down executor threads to exit.
+			group.shutdownGracefully();
+		}
+	}
 
-    public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.err.println(
-                    "Usage: " + HttpSnoopClient.class.getSimpleName() +
-                    " <URL>");
-            return;
-        }
+	public static void main(String[] args) throws Exception {
+		if (args.length != 1) {
+			System.err.println("Usage: " + HttpSnoopClient.class.getSimpleName() + " <URL>");
+			return;
+		}
 
-        URI uri = new URI(args[0]);
-        new HttpSnoopClient(uri).run();
-    }
+		URI uri = new URI(args[0]);
+		new HttpSnoopClient(uri).run();
+	}
 }
