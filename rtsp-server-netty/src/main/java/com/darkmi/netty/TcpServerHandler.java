@@ -1,4 +1,4 @@
-package com.darkmi.nettydemo;
+package com.darkmi.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

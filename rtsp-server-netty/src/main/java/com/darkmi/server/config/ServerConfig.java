@@ -1,7 +1,5 @@
 package com.darkmi.server.config;
 
-import java.net.UnknownHostException;
-
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +28,9 @@ public class ServerConfig {
 		RtspController rtspController = null;
 		try {
 			rtspController = new RtspController();
-			rtspController.setBindAddress(ip);
-			rtspController.setRmPort(port);
-		} catch (UnknownHostException e) {
+			rtspController.setIp(ip);
+			rtspController.setPort(port);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return rtspController;

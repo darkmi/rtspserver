@@ -1,4 +1,4 @@
-package com.darkmi.nettydemo;
+package com.darkmi.netty;
 
 import org.apache.log4j.Logger;
 import io.netty.channel.ChannelHandlerContext;

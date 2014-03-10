@@ -1,7 +1,10 @@
 package com.darkmi.server.core;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -10,7 +13,6 @@ import io.netty.handler.codec.rtsp.RtspMethods;
 import io.netty.handler.codec.rtsp.RtspResponseStatuses;
 import io.netty.handler.codec.rtsp.RtspVersions;
 
-import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
@@ -33,14 +35,14 @@ import com.darkmi.server.session.SimpleRandomKeyFactory;
  */
 public class RtspController implements RtspListener {
 	private static final Logger logger = Logger.getLogger(RtspController.class);
-	private static RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
-	public static final String SERVER = "MediaHawk";
-
-	private String bindAddress;
-	private int rmPort;
+	private static final RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
+	public static final String SERVER = "RtspServer";
+	private String ip;
+	private int port;
 	private RtspStack server = null;
+	private RtspStack client = null;
 	private RtspSessionAccessor sessionAccessor;
-	
+
 	//private int smPort;
 	//private RtspServerStackImpl sm = null;
 
@@ -56,22 +58,23 @@ public class RtspController implements RtspListener {
 	 * @throws Exception
 	 */
 	public void start() throws Exception {
-		this.server = new RtspServerStackImpl(this.bindAddress, this.rmPort);
+		//start server.
+		this.server = new RtspServerStackImpl(this.ip, this.port);
 		this.server.setRtspListener(this);
 		this.server.start();
-		logger.debug("Started RM of Video Server. Bound at IP " + this.bindAddress + " at port " + this.rmPort);
+		logger.debug("Started Rtsp Server. Bound at IP " + this.ip + " at port " + this.port);
 
-		//this.sm = new RtspServerStackImpl(this.bindAddress, this.smPort);
-		//this.sm.setRtspListener(this);
-		//this.sm.start();
-		//logger.debug("Started SM of Video Server. Bound at IP " + this.bindAddress + " at port " + this.rmPort);
+		//start client.
+		client = new RtspClientStackImpl();
+		client.start();
+		logger.debug("Started Rtsp Client. ");
 	}
 
 	/**
 	 * 停止.
 	 */
 	public void stop() {
-		logger.debug("Stop Video Server. Listening at IP " + this.bindAddress);
+		logger.debug("Stop Video Server. Listening at IP " + this.ip);
 		this.server.stop();
 		//this.sm.stop();
 	}
@@ -88,10 +91,10 @@ public class RtspController implements RtspListener {
 	 */
 	@Override
 	public void onRtspRequest(HttpRequest request, ChannelHandlerContext ctx) {
-		logger.debug("Receive request " + request);
+		logger.debug("Receive request ==> \n " + request);
 		Callable<HttpResponse> action = null;
-		//Callable<HttpRequest> announceAction = null;
 		HttpResponse response = null;
+		//Callable<HttpRequest> announceAction = null;
 		//HttpRequest announce = null;
 
 		try {
@@ -102,11 +105,7 @@ public class RtspController implements RtspListener {
 				action = new DescribeAction(request);
 				response = action.call();
 			} else if (request.getMethod().equals(RtspMethods.SETUP)) {
-				//InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel.getRemoteAddress();
-				//String remoteIp = inetSocketAddress.getAddress().getHostAddress();
-				String remoteIp = "192.168.14.116";
-				action = new SetupAction(this, request, remoteIp);
-				response = action.call();
+				response = onSetupRequest(request);
 			} else if (request.getMethod().equals(RtspMethods.PLAY)) {
 				action = new PlayAction(this, request);
 				response = action.call();
@@ -138,35 +137,84 @@ public class RtspController implements RtspListener {
 		logger.debug("返回响应: \n" + response.toString());
 		//ctx.write(response);
 		//ctx.flush();
-		
+
 		ctx.channel().writeAndFlush(response);
-		
+
 		//if (null != announce) {
 		//logger.debug("Sending Announce " + announce.toString());
 		//channel.write(announce);
 		//}
 	}
 
+	private HttpResponse onSetupRequest(HttpRequest request) {
+		try {
+			//处理请求
+			// Prepare the RTSP request.
+			StringBuffer url = new StringBuffer();
+			url.append("rtsp://").append("192.168.80.50").append(":").append(554);
+
+			StringBuffer sdp = new StringBuffer();
+			sdp.append("v=0");
+			sdp.append("o=- 22b03f0e-170b-4845-8c4a-1d7bac576bbc  IN IP4 0.0.0.0");
+			sdp.append("s=");
+			sdp.append("c=IN IP4 0.0.0.0t=0 0");
+			sdp.append("a=X-playlist-item: 10002 movi2010000004329519 0-");
+			sdp.append("m=video 0 udp MP2T");
+
+			FullHttpRequest req = new DefaultFullHttpRequest(RtspVersions.RTSP_1_0, RtspMethods.SETUP, url.toString(),
+					Unpooled.wrappedBuffer(sdp.toString().getBytes()));
+			req.headers().set(RtspHeaders.Names.CSEQ, "10");
+
+			req.headers().set(RtspHeaders.Names.CONTENT_TYPE, "application/sdp");
+			req.headers().set("OnDemandSessionId", "22b03f0e-170b-4845-8c4a-1d7bac576bbc");
+			req.headers().set(RtspHeaders.Names.REQUIRE, "com.comcast.ngod.r2");
+			req.headers().set("SessionGroup", "80333.20");
+			req.headers().set("StreamControlProto", "rtsp");
+
+			req.headers()
+					.set(RtspHeaders.Names.TRANSPORT,
+							"MP2T/DVBC/UDP;unicast;destination=192.168.88.1;client_port=782;bandwidth=10005600;client=;sop_group=CDN-OSTR1-F;sop_name=CDN-OSTR1-F");
+
+			req.headers().set(RtspHeaders.Names.USER_AGENT, "NSS/1.16");
+			req.headers().set("Volume", "/files");
+			req.headers().set("Content-Length", sdp.length());
+			req.headers().set("Date", "Mon, 24 Feb 2014 03:21:44 GMT");
+
+			logger.debug("video server setup =====> \n" + req);
+
+			client.sendRequest(req, "192.168.80.50", 554);
+
+			//构造响应
+			Callable<HttpResponse> action = new SetupAction(this, request);
+			return action.call();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	public void onRtspResponse(HttpResponse response) {
+		logger.debug(" video server response  ==>\n  " + response);
+
 	}
 
 	/*-----------Setter And Getter --------------*/
 
-	public String getBindAddress() {
-		return bindAddress;
+	public String getIp() {
+		return ip;
 	}
 
-	public void setBindAddress(String bindAddress) throws UnknownHostException {
-		this.bindAddress = bindAddress;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
-	public int getRmPort() {
-		return rmPort;
+	public int getPort() {
+		return port;
 	}
 
-	public void setRmPort(int rmPort) {
-		this.rmPort = rmPort;
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	public RtspSessionAccessor getSessionAccessor() {

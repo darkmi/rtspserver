@@ -1,4 +1,4 @@
-package com.darkmi.nettydemo;
+package com.darkmi.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -8,17 +8,20 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.rtsp.RtspHeaders;
+import io.netty.handler.codec.rtsp.RtspMethods;
+import io.netty.handler.codec.rtsp.RtspRequestEncoder;
+import io.netty.handler.codec.rtsp.RtspResponseDecoder;
+import io.netty.handler.codec.rtsp.RtspVersions;
+
 import org.apache.log4j.Logger;
 
-public class TcpClient {
+public class SetupClient {
 	private static final Logger logger = Logger.getLogger(TcpClient.class);
-	public static String HOST = "192.168.14.116";
-	public static int PORT = 9999;
+	public static String HOST = "192.168.80.50";
+	public static int PORT = 554;
 	public static Bootstrap bootstrap = getBootstrap();
 	public static Channel channel = getChannel(HOST, PORT);
 
@@ -34,11 +37,9 @@ public class TcpClient {
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
 				ChannelPipeline pipeline = ch.pipeline();
-				pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-				pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
-				pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-				pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-				pipeline.addLast("handler", new TcpClientHandler());
+				pipeline.addLast("encoder", new RtspRequestEncoder());
+				pipeline.addLast("decoder", new RtspResponseDecoder());
+				pipeline.addLast("handler", new RtspClientHandler());
 			}
 		});
 		b.option(ChannelOption.SO_KEEPALIVE, true);
@@ -56,7 +57,7 @@ public class TcpClient {
 		return channel;
 	}
 
-	public static void sendMsg(String msg) throws Exception {
+	public static void sendMsg(FullHttpRequest msg) throws Exception {
 		if (channel != null) {
 			channel.writeAndFlush(msg).sync();
 		} else {
@@ -66,14 +67,26 @@ public class TcpClient {
 
 	public static void main(String[] args) throws Exception {
 		try {
-			long t0 = System.nanoTime();
-			for (int i = 0; i < 100000; i++) {
-				TcpClient.sendMsg(i + "你好1");
-			}
-			long t1 = System.nanoTime();
-			System.out.println((t1 - t0) / 1000000.0);
-		} catch (Exception e) {	
+
+			// Prepare the RTSP request.
+			StringBuffer url = new StringBuffer();
+			url.append("rtsp://").append("192.168.14.116").append(":").append(554);
+
+			FullHttpRequest req = new DefaultFullHttpRequest(RtspVersions.RTSP_1_0, RtspMethods.SETUP, url.toString());
+			req.headers().set(RtspHeaders.Names.CSEQ, "10");
+			req.headers().set(RtspHeaders.Names.TRANSPORT, "MP2T/DVBC/QAM;unicast;client=00AF123456DE;qam_name=aaa");
+			logger.debug("=====> \n" + req);
+
+			RtspClient.sendMsg(req);
+			//long t0 = System.nanoTime();
+			//for (int i = 0; i < 100000; i++) {
+			//	TcpClient.sendMsg(i + "你好1");
+			//}
+			//long t1 = System.nanoTime();
+			//System.out.println((t1 - t0) / 1000000.0);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 }

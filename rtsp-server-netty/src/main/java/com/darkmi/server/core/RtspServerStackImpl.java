@@ -32,7 +32,6 @@ public class RtspServerStackImpl implements RtspStack {
 	private static final EventLoopGroup workerGroup = new NioEventLoopGroup(BIZTHREADSIZE);
 
 	//public RtspServerStackImpl(){
-	//	
 	//}
 	
 	public RtspServerStackImpl(String address, int port) throws UnknownHostException {

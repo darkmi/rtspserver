@@ -1,4 +1,4 @@
-package com.darkmi.nettydemo;
+package com.darkmi.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 public class RtspClient {
 	
 	private static final Logger logger = Logger.getLogger(TcpClient.class);
-	public static String HOST = "192.168.14.116";
+	public static String HOST = "192.168.80.50";
 	public static int PORT = 554;
 	public static Bootstrap bootstrap = getBootstrap();
 	public static Channel channel = getChannel(HOST, PORT);
@@ -69,7 +69,7 @@ public class RtspClient {
 	public static void main(String[] args) throws Exception {
 		try {
 			
-			
+
 			// Prepare the RTSP request.
 			StringBuffer url = new StringBuffer();
 			url.append("rtsp://").append("192.168.14.116").append(":").append(554);
