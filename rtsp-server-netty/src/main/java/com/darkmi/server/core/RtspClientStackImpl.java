@@ -28,8 +28,6 @@ public class RtspClientStackImpl implements RtspStack {
 	private static Logger logger = Logger.getLogger(RtspClientStackImpl.class);
 	private String address;
 	private int port;
-	//private final InetAddress inetAddress;
-	//private Channel channel = null;
 	private Bootstrap rtspClient;
 	private RtspListener listener = null;
 
@@ -45,8 +43,7 @@ public class RtspClientStackImpl implements RtspStack {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
 			rtspClient = new Bootstrap();
-			rtspClient.group(group).channel(NioSocketChannel.class)
-					.handler(new RtspClientPipelineFactory(this).getPipeline());
+			rtspClient.group(group).channel(NioSocketChannel.class).handler(new RtspClientInitializer(this).get());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

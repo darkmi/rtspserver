@@ -47,7 +47,7 @@ public class RtspServerStackImpl implements RtspStack {
 			ServerBootstrap server = new ServerBootstrap();
 			server.group(bossGroup, workerGroup);
 			server.channel(NioServerSocketChannel.class);
-			server.childHandler(new RtspServerPipelineFactory(this).getPipeline());
+			server.childHandler(new RtspServerInitializer(this).get());
 			server.bind(bindAddress).sync();
 		} catch (InterruptedException e) {
 			logger.error(e.getMessage(), e);
@@ -56,20 +56,14 @@ public class RtspServerStackImpl implements RtspStack {
 			logger.error(e.getMessage(), e);
 		}
 
-		// Set up the event pipeline factory.
-		//bootstrap.setPipelineFactory(new RtspServerPipelineFactory(this));
-		// Bind and start to accept incoming connections.
-		//channel = bootstrap.bind(bindAddress);
-		//allChannels.add(channel);
-
 		logger.info("ODRM Start.");
 	}
 
 	@Override
 	public void stop() {
-		//		ChannelGroupFuture future = allChannels.close();
-		//		future.awaitUninterruptibly();
-		//		bootstrap.getFactory().releaseExternalResources();
+		//ChannelGroupFuture future = allChannels.close();
+		//future.awaitUninterruptibly();
+		//bootstrap.getFactory().releaseExternalResources();
 	}
 
 	@Override

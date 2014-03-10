@@ -11,15 +11,15 @@ import io.netty.handler.codec.rtsp.RtspResponseEncoder;
  * @author darkmi
  *
  */
-public class RtspServerPipelineFactory {
+public class RtspServerInitializer {
 
 	private final RtspServerStackImpl rtspServerStackImpl;
 
-	protected RtspServerPipelineFactory(RtspServerStackImpl rtspServerStackImpl) {
+	protected RtspServerInitializer(RtspServerStackImpl rtspServerStackImpl) {
 		this.rtspServerStackImpl = rtspServerStackImpl;
 	}
 
-	public ChannelInitializer<SocketChannel> getPipeline() throws Exception {
+	public ChannelInitializer<SocketChannel> get() throws Exception {
 		return new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {
