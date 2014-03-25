@@ -8,8 +8,8 @@ public class Main {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ServerConfig.class);
 		RtspServer rtspServer = (RtspServer) ctx.getBean(RtspServer.class);
 		RtspMessageHandler handler = ctx.getBean(RtspMessageHandler.class);
-		handler.setIp(rtspServer.getIp());
-		handler.setPort(rtspServer.getPort());
+		handler.setServerAddr(rtspServer.getIp());
+		handler.setServerPort(rtspServer.getPort());
 		rtspServer.setMessageHandler(handler);
 		rtspServer.start();
 	}

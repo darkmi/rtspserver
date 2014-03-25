@@ -24,13 +24,13 @@ import com.darkmi.server.util.DateUtil;
 public class RtspMessageHandler extends IoHandlerAdapter {
 	private Logger logger = LoggerFactory.getLogger(RtspMessageHandler.class);
 	private static final String CSEQ = "cseq";
-	private static final String REQUIRE_VALUE_HFC = "HFC.Delivery.Profile.1.0";
 	private static final String REQUIRE_VALUE_NGOD_R2 = "com.comcast.ngod.r2";
-	public static final String IO_SESSION_KEY = "io_session_key";
+	private static final String REQUIRE_VALUE_NGOD_C1 = "com.comcast.ngod.c1";
+	private static final String IO_SESSION_KEY = "io_session_key";
+	private static final RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
 	private RtspSessionAccessor sessionAccessor;
-	private static RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
-	private String ip;
-	private int port;
+	private String serverAddr;
+	private int serverPort;
 
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
@@ -59,9 +59,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		case GET_PARAMETER:
 			onRequestGP(session, request);
 			break;
-		case ANNOUNCE:
-			onRequestAnnounce(request);
-			break;
 		default:
 			onDefaultRequest(session, request, request.getHeader(RtspHeaderCode.CSeq));
 		}
@@ -81,23 +78,21 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	private void onRequestOptions(IoSession session, RtspRequest request) {
 		RtspResponse response = new RtspResponse();
 		response.setHeader(RtspHeaderCode.Public, "DESCRIBE, SETUP, TEARDOWN");
-		response.setHeader(RtspHeaderCode.Server, "MediaHawk");
+		response.setHeader(RtspHeaderCode.Server, "RtspServer");
 		response.setHeader(RtspHeaderCode.ContentLength, "0");
 		session.write(response);
 	}
 
 	private void onRequestDescribe(IoSession session, RtspRequest request) {
-		logger.debug("vvs Describe begin { ");
 		RtspResponse response = new RtspResponse();
-		response.setHeader(RtspHeaderCode.Public, "DESCRIBE, SETUP, TEARDOWN");
-		response.setHeader(RtspHeaderCode.Server, "MediaHawk");
+		response.setHeader(RtspHeaderCode.Public, "DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER");
+		response.setHeader(RtspHeaderCode.Server, "RtspServer");
 		response.setHeader(RtspHeaderCode.ContentLength, "0");
 		session.write(response);
-		logger.debug("vvs Describe end } ");
 	}
 
 	private void onRequestSetup(IoSession session, RtspRequest request) {
-		//获取cesq
+		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
 			logger.error("cesq is null.");
@@ -105,82 +100,62 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//根据require选择相应协议(HFC or NGOD)
+		//get require
 		String requireValue = request.getHeader(RtspHeaderCode.Require);
-		if (null == requireValue || "".equals(requireValue)) {
-			logger.error("require value is null.");
+		if (null == requireValue || "".equals(requireValue) || (!requireValue.equals(REQUIRE_VALUE_NGOD_R2))) {
+			logger.error("require value ==> {} ", requireValue);
 			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
 			return;
 		}
 
-		//获取Transport
+		//get Transport
 		String strTransport = request.getHeader(RtspHeaderCode.Transport);
 		if (null == strTransport || strTransport.equals("")) {
 			logger.error("transport value is null.");
 			handleError(session, cseq, RtspCode.UnsupportedTransport);
 			return;
 		}
-
 		RtspTransport transport = new RtspTransport(strTransport);
 
-		//获取destination
+		//get destination
 		String destination = transport.getDestination();
-
-		//获取port
 		int port = transport.getPort();
 
-		//创建session并记录使用资源
 		String sessionKey = keyFactory.createSessionKey();
 		logger.debug("sessionKey --> " + sessionKey);
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, true);
 		rtspSession.setAttribute(destination + ":" + port, "USED");
 
-		if (REQUIRE_VALUE_HFC.equalsIgnoreCase(requireValue)) {
-			logger.debug("Rtsp Server 返回HFC协议响应。。。。。。。。。。。。");
-			RtspResponse response = new RtspResponse();
-			response.setCode(RtspCode.OK);
-			response.setHeader(RtspHeaderCode.CSeq, cseq);
-			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
-			response.setHeader(RtspHeaderCode.Session, sessionKey + ";timeout=60");
-			response.setHeader(RtspHeaderCode.Transport, "");
-			response.setHeader(RtspHeaderCode.Range, "npt=0-233.800");
-			String location = "rtsp://" + ip + ":" + port + "/";
-			response.setHeader(RtspHeaderCode.Location, location);
-			session.write(response);
-		} else if (REQUIRE_VALUE_NGOD_R2.equalsIgnoreCase(requireValue)) {
-			logger.debug("vvs返回NGOD协议响应。。。。。。。。。。。。");
-			//构建返回给请求方的响应
-			RtspResponse response = new RtspResponse();
-			response.setCode(RtspCode.OK);
-			response.setHeader(RtspHeaderCode.CSeq, cseq);
-			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
-			response.setHeader(RtspHeaderCode.Session, sessionKey + ";timeout=60");
-			response.setHeader(RtspHeaderCode.OnDemandSessionId, request.getHeader(RtspHeaderCode.OnDemandSessionId));
-			response.setHeader(RtspHeaderCode.Transport, "");
-			response.setHeader(RtspHeaderCode.Range, "npt=0-233.800");
-			response.setHeader(RtspHeaderCode.ContentType, "application/sdp");
+		RtspResponse response = new RtspResponse();
+		response.setCode(RtspCode.OK);
+		response.setHeader(RtspHeaderCode.CSeq, cseq);
+		response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
+		response.setHeader(RtspHeaderCode.ContentType, "application/sdp");
+		response.setHeader(RtspHeaderCode.Session, sessionKey + ";timeout=60");
+		response.setHeader(RtspHeaderCode.OnDemandSessionId, request.getHeader(RtspHeaderCode.OnDemandSessionId));
+		response.setHeader(RtspHeaderCode.Transport, request.getHeader(RtspHeaderCode.Transport));
+		response.setHeader(RtspHeaderCode.Range, "npt=0-233.800");
+		response.setHeader(RtspHeaderCode.Server, "RtspServer");
+		response.setHeader("Method-Code", "SETUP");
 
-			//set sdp extension
-			StringBuffer sdp = new StringBuffer();
-			sdp.append("v=0\r\n");
-			sdp.append("o=- " + sessionKey + " 1339005446 IN IP4 " + ip + "\r\n");
-			sdp.append("s=RTSP Session\r\n");
-			sdp.append("t=0 0\r\n");
-			sdp.append("a=control:rtsp://" + ip + ":" + port + "/" + sessionKey + "\r\n");
-			sdp.append("c=IN IP4 0.0.0.0\r\n");
-			sdp.append("m=video 0 RTP/AVP 33\r\n");
+		//set sdp extension
+		StringBuffer sdp = new StringBuffer();
+		sdp.append("v=0\r\n");
+		sdp.append("o=- " + sessionKey + " 1339005446 IN IP4 " + serverAddr + "\r\n");
+		sdp.append("s=RTSP Session\r\n");
+		sdp.append("t=0 0\r\n");
+		sdp.append("a=control:rtsp://" + serverAddr + ":" + serverPort + "/" + sessionKey + "\r\n");
+		sdp.append("c=IN IP4 0.0.0.0\r\n");
+		sdp.append("m=video 0 RTP/AVP 33\r\n");
 
-			//设置SDP内容长度
-			response.setHeader(RtspHeaderCode.ContentLength, String.valueOf(sdp.length()));
-			response.setBuffer(sdp);
-			//发送响应
-			session.write(response);
-		}
+		response.setHeader(RtspHeaderCode.ContentLength, String.valueOf(sdp.length()));
+		response.setBuffer(sdp);
+
+		session.write(response);
 	}
 
 	private void onRequestTeardown(IoSession session, RtspRequest request) {
-		logger.debug("vvs handle TEARDOWN request begin { ");
-		//获取cesq
+		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
 			logger.error("cesq is null.");
@@ -188,7 +163,15 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//获取sessionKey
+		//get require
+		String requireValue = request.getHeader(RtspHeaderCode.Require);
+		if (null == requireValue || "".equals(requireValue) || (!requireValue.equals(REQUIRE_VALUE_NGOD_R2))) {
+			logger.error("require value ==> {} ", requireValue);
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//get sessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
 			logger.error("sessionKey is null.");
@@ -196,7 +179,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//获取session
+		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
 			logger.error("rtspSession is null.");
@@ -204,24 +187,21 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//销毁session
+		//destroy session
 		rtspSession.destroy();
 
-		//构建返回给请求方的响应
 		RtspResponse response = new RtspResponse();
 		response.setCode(RtspCode.OK);
 		response.setHeader(RtspHeaderCode.CSeq, cseq);
 		response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
 		response.setHeader(RtspHeaderCode.Location, request.getUrl().toString());
 		response.setHeader(RtspHeaderCode.Session, sessionKey);
+		response.setHeader("Method-Code", "TEARDOWN");
 		session.write(response);
-
-		logger.debug("vvs handle TEARDOWN request end } ");
 	}
 
 	private void onRequestPlay(IoSession session, RtspRequest request) {
-		logger.debug("vvs handle PLAY request begin { ");
-		//获取cesq
+		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
 			logger.error("cesq is null.");
@@ -229,14 +209,22 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//获取sessionKey
+		//get require
+		String requireValue = request.getHeader(RtspHeaderCode.Require);
+		if (null == requireValue || "".equals(requireValue) || (!requireValue.equals(REQUIRE_VALUE_NGOD_C1))) {
+			logger.error("require value ==> {} ", requireValue);
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//getsessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
 			logger.error("sessionKey is null.");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		}
 
-		//获取session
+		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
 			logger.error("rtspSession is null.");
@@ -267,12 +255,10 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			}
 			session.write(response);
 		}
-		logger.debug("vvs handle PLAY request end } ");
 	}
 
 	private void onRequestPause(IoSession session, RtspRequest request) {
-		logger.debug("vvs handle PAUSE request begin { ");
-		//获取cesq
+		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
 			logger.error("cesq is null.");
@@ -280,22 +266,30 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//获取sessionKey
+		//get require
+		String requireValue = request.getHeader(RtspHeaderCode.Require);
+		if (null == requireValue || "".equals(requireValue) || (!requireValue.equals(REQUIRE_VALUE_NGOD_C1))) {
+			logger.error("require value ==> {} ", requireValue);
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//get sessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
 			logger.error("sessionKey is null.");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		}
 
-		//获取session
+		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
 			logger.error("rtspSession is null.");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		} else {
-			//保存IO_SESSION_ID
+			//save IO_SESSION_ID
 			rtspSession.setAttribute(IO_SESSION_KEY, session);
-			//构造响应
+
 			RtspResponse response = new RtspResponse();
 			response.setCode(RtspCode.OK);
 			response.setHeader(RtspHeaderCode.CSeq, cseq);
@@ -314,14 +308,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 
 			session.write(response);
 
-			//暂停5毫秒再发送ANNOUNCE
-			//try {
-			//	Thread.sleep(5);
-			//} catch (InterruptedException e) {
-			//		logger.error(e.getMessage());
-			//}
-
-			//发送暂停ANNOUNCE
+			//send ANNOUNCE
 			RtspRequest announceReq = new RtspRequest();
 			announceReq.setVerb(Verb.ANNOUNCE);
 			announceReq.setUrl(new RtspUrl("rtsp://192.168.14.220:8060/movie---26---bianfuxiaqianchuan").toString());
@@ -331,12 +318,10 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			announceReq.setHeader(RtspHeaderCode.Notice, "1103 \"Stream Stalled\" event-date=20000406T091645Z");
 			session.write(announceReq);
 		}
-		logger.debug("vvs handle PAUSE request end } ");
 	}
 
 	private void onRequestGP(IoSession session, RtspRequest request) {
-		logger.debug("vvs handle GET_PARAMETER request begin { ");
-		//获取cesq
+		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
 			logger.error("cesq is null.");
@@ -344,21 +329,28 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		//获取sessionKey
+		//get require
+		String requireValue = request.getHeader(RtspHeaderCode.Require);
+		if (null == requireValue || "".equals(requireValue) || (!requireValue.equals(REQUIRE_VALUE_NGOD_C1))) {
+			logger.error("require value ==> {} ", requireValue);
+			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
+			return;
+		}
+
+		//get sessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
 			logger.debug("sessionKey is null.");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		}
 
-		//获取session
+		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		} else {
-			//保存IO_SESSION_ID
+			//save IO_SESSION_ID
 			rtspSession.setAttribute(IO_SESSION_KEY, session);
-			//构造响应
 			RtspResponse response = new RtspResponse();
 			response.setCode(RtspCode.OK);
 			response.setHeader(RtspHeaderCode.CSeq, cseq);
@@ -366,11 +358,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			response.setHeader(RtspHeaderCode.Session, sessionKey);
 			session.write(response);
 		}
-		logger.debug("vvs handle GET_PARAMETER request end } ");
-	}
-
-	private void onRequestAnnounce(RtspRequest request) {
-
 	}
 
 	private void onDefaultRequest(IoSession session, RtspRequest request, String cseq) {
@@ -380,9 +367,6 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		session.write(response);
 	}
 
-	/**
-	 * 返回错误响应.
-	 */
 	private void handleError(IoSession session, String cseq, RtspCode code) {
 		RtspResponse response = new RtspResponse();
 		response.setCode(code);
@@ -397,11 +381,19 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		this.sessionAccessor = sessionAccessor;
 	}
 
-	public void setIp(String ip) {
-		this.ip = ip;
+	public String getServerAddr() {
+		return serverAddr;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
+	public void setServerAddr(String serverAddr) {
+		this.serverAddr = serverAddr;
+	}
+
+	public int getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
 	}
 }
