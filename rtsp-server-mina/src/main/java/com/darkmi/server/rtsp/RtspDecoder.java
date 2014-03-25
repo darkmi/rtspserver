@@ -49,7 +49,6 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 
 	@Override
 	protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
-		logger.debug("开始解码RTSP Message { ... ");
 		logger.debug("SM SEND bytes = {}", in.getHexDump());
 		in.mark();
 		logger.debug("markvalue ==> " + in.markValue());
@@ -70,7 +69,6 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 		RtspMessage rtspMessage = (RtspMessage) session.getAttribute("rtspMessage");
 
 		try {
-			logger.debug("开始解析COMMAND AND HEADER内容................");
 			while (true) {
 				if (state != ReadState.Command && state != ReadState.Header) {
 					// the "while" loop is only used to read commands and headers
@@ -85,10 +83,9 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 				}
 
 				if (line.length() == 0) {
-					originMsg.append("\r\n");
 					// This is the empty line that marks the end of the headers section
 					if (null == rtspMessage) {
-						//state = ReadState.Command;
+						originMsg.append("\r\n");
 						continue;
 					} else {
 						state = ReadState.Body;
@@ -140,7 +137,7 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 						}
 						((RtspRequest) rtspMessage).setUrl(url);
 					}
-					//保存原始请求信息
+					//save origin request
 					rtspMessage.saveOriginRequest(originMsg.toString() + line + "\r\n");
 					state = ReadState.Header;
 					break;
@@ -157,7 +154,7 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 
 					rtspMessage.setHeader(m.group(1), m.group(2));
 
-					//保存原始请求信息
+					//save origin message
 					rtspMessage.saveOriginRequest(line + "\r\n");
 
 					break;
@@ -167,19 +164,16 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 			}
 
 			if (state == ReadState.Body) {
-				logger.debug("开始解析BODY内容................");
-				//获取body长度
 				int contentLength = Integer.parseInt(rtspMessage.getHeader("Content-Length", "0"));
 				if (contentLength == 0) { // there's no buffer to be read
 					state = ReadState.Dispatch;
 				} else {
 					char[] cbuf = new char[contentLength];
-					int preReadCount = 0; //上次读取的长度
+					int preReadCount = 0;
 					int readCount = reader.read(cbuf, 0, contentLength);
 					String partBody = new String(cbuf, 0, readCount);
-					logger.debug("本次读取的BODY --》\n{}", partBody);
+					logger.debug("currrent BODY --》\n{}", partBody);
 					rtspMessage.appendToBuffer(new StringBuffer(partBody));
-					//保存原始请求信息
 					rtspMessage.saveOriginRequest(new StringBuffer(partBody));
 					if (session.getAttribute("preReadCount") == null) {
 						preReadCount = readCount;
@@ -187,15 +181,12 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 						preReadCount = (Integer) session.getAttribute("preReadCount") + readCount;
 					}
 					session.setAttribute("preReadCount", preReadCount);
-					logger.debug("BODY长度 --> {}", contentLength);
-					logger.debug("本次读取的BODY长度 --> {}", readCount);
-					logger.debug("截止到本次一共读取的BODY长度 --> {}", preReadCount);
+					logger.debug("current body length --> {}", readCount);
+					logger.debug("readed body length --> {}", preReadCount);
 					if ((readCount == -1) || (preReadCount == contentLength)) {
-						logger.debug("BODY内容解析完毕................");
 						session.removeAttribute("preReadCount");
 						state = ReadState.Dispatch;
 					} else {
-						logger.debug("BODY内容没有解析完毕，继续处理................");
 						session.setAttribute("state", state);
 						session.setAttribute("rtspMessage", rtspMessage);
 						return false;
@@ -204,21 +195,17 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 			}
 
 			if (state == ReadState.Dispatch) {
-				logger.debug("RTSP Message解析完毕，返回消息对象并检查是否有粘包................");
 				// The message is already formed send it
 				session.removeAttribute("state");
 				session.removeAttribute("rtspMessage");
 				out.write(rtspMessage);
 				String line = reader.readLine();
 				if (line != null) {
-					logger.warn("粘包，继续处理.....................");
 					in.position(in.markValue() + rtspMessage.getOriginRequest().toString().getBytes().length);
 					reader.close();
 					return true;
 				}
 				reader.close();
-				logger.debug("无粘包.....................");
-				logger.debug("结束解码RTSP Message .... } ");
 				return false;
 			}
 		} catch (IOException e) {
@@ -241,7 +228,6 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 		// Save attributes in session
 		session.setAttribute("state", state);
 		session.setAttribute("rtspMessage", rtspMessage);
-		logger.debug("结束解码RTSP Message .... } ");
 		return false;
 	}
 }

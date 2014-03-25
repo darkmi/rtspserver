@@ -12,7 +12,6 @@ import com.darkmi.server.rtsp.RtspHeaderCode;
 import com.darkmi.server.rtsp.RtspRequest;
 import com.darkmi.server.rtsp.RtspRequest.Verb;
 import com.darkmi.server.rtsp.RtspResponse;
-import com.darkmi.server.rtsp.RtspTransport;
 import com.darkmi.server.rtsp.RtspUrl;
 import com.darkmi.server.session.RtspSession;
 import com.darkmi.server.session.RtspSessionAccessor;
@@ -109,22 +108,13 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		}
 
 		//get Transport
-		String strTransport = request.getHeader(RtspHeaderCode.Transport);
-		if (null == strTransport || strTransport.equals("")) {
-			logger.error("transport value is null.");
-			handleError(session, cseq, RtspCode.UnsupportedTransport);
-			return;
-		}
-		RtspTransport transport = new RtspTransport(strTransport);
-
-		//get destination
-		String destination = transport.getDestination();
-		int port = transport.getPort();
+		String transport = request.getHeader(RtspHeaderCode.Transport);
 
 		String sessionKey = keyFactory.createSessionKey();
 		logger.debug("sessionKey --> " + sessionKey);
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, true);
-		rtspSession.setAttribute(destination + ":" + port, "USED");
+		//save transport
+		rtspSession.setAttribute(transport, "USED");
 
 		RtspResponse response = new RtspResponse();
 		response.setCode(RtspCode.OK);

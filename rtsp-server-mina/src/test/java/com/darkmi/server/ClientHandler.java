@@ -10,10 +10,6 @@ public class ClientHandler extends IoHandlerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 	private final String values;
 
-	/**
-	 * 构造函数
-	 * @param values
-	 */
 	public ClientHandler(String values) {
 		this.values = values;
 	}
@@ -25,7 +21,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
-		logger.debug(message.toString());
+		logger.debug("response ==> \n{}", message.toString());
 	}
 
 	@Override
