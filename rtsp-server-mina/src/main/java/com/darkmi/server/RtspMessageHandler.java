@@ -12,7 +12,6 @@ import com.darkmi.server.rtsp.RtspHeaderCode;
 import com.darkmi.server.rtsp.RtspRequest;
 import com.darkmi.server.rtsp.RtspRequest.Verb;
 import com.darkmi.server.rtsp.RtspResponse;
-import com.darkmi.server.rtsp.RtspUrl;
 import com.darkmi.server.session.RtspSession;
 import com.darkmi.server.session.RtspSessionAccessor;
 import com.darkmi.server.session.RtspSessionKeyFactory;
@@ -94,7 +93,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
-			logger.error("cesq is null.");
+			logger.error("cesq is null...................");
 			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
 			return;
 		}
@@ -148,7 +147,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
-			logger.error("cesq is null.");
+			logger.error("cesq is null...................");
 			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
 			return;
 		}
@@ -164,7 +163,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get sessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
-			logger.error("sessionKey is null.");
+			logger.error("sessionKey is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 			return;
 		}
@@ -172,7 +171,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
-			logger.error("rtspSession is null.");
+			logger.error("rtspSession is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 			return;
 		}
@@ -194,7 +193,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
-			logger.error("cesq is null.");
+			logger.error("cesq is null...................");
 			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
 			return;
 		}
@@ -210,25 +209,23 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//getsessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
-			logger.error("sessionKey is null.");
+			logger.error("sessionKey is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		}
 
 		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
-			logger.error("rtspSession is null.");
+			logger.error("rtspSession is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		} else {
-			//保存IO_SESSION_ID
 			rtspSession.setAttribute(IO_SESSION_KEY, session);
-			//构造响应
 			RtspResponse response = new RtspResponse();
 			response.setCode(RtspCode.OK);
 			response.setHeader(RtspHeaderCode.CSeq, cseq);
 			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
 			response.setHeader(RtspHeaderCode.Session, sessionKey);
-			//range处理
+
 			String rangeValue = request.getHeader("Range");
 			if (null != rangeValue) {
 				String[] rangeValues = rangeValue.split("=");
@@ -236,7 +233,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			} else {
 				response.setHeader(RtspHeaderCode.Range, "npt=0.000-233.800");
 			}
-			//scale处理
+
 			String scale = request.getHeader(RtspHeaderCode.Scale);
 			if (null != scale) {
 				response.setHeader(RtspHeaderCode.Scale, scale);
@@ -251,7 +248,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
-			logger.error("cesq is null.");
+			logger.error("cesq is null...................");
 			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
 			return;
 		}
@@ -267,17 +264,17 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get sessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
-			logger.error("sessionKey is null.");
+			logger.error("sessionKey is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		}
 
 		//get session
 		RtspSession rtspSession = sessionAccessor.getSession(sessionKey, false);
 		if (null == rtspSession) {
-			logger.error("rtspSession is null.");
+			logger.error("rtspSession is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		} else {
-			//save IO_SESSION_ID
+
 			rtspSession.setAttribute(IO_SESSION_KEY, session);
 
 			RtspResponse response = new RtspResponse();
@@ -287,7 +284,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
 			response.setHeader(RtspHeaderCode.Session, sessionKey);
 			response.setHeader(RtspHeaderCode.Scale, "1.00");
-			//range处理
+
 			String rangeValue = request.getHeader("Range");
 			if (null != rangeValue) {
 				String[] rangeValues = rangeValue.split("=");
@@ -301,7 +298,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			//send ANNOUNCE
 			RtspRequest announceReq = new RtspRequest();
 			announceReq.setVerb(Verb.ANNOUNCE);
-			announceReq.setUrl(new RtspUrl("rtsp://192.168.14.220:8060/movie---26---bianfuxiaqianchuan").toString());
+			announceReq.setUrl("rtsp://192.168.14.220:8060/" + sessionKey);
 			announceReq.setHeader(RtspHeaderCode.CSeq, cseq);
 			announceReq.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
 			announceReq.setHeader(RtspHeaderCode.Session, sessionKey);
@@ -314,7 +311,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get cesq
 		String cseq = request.getHeader(RtspHeaderCode.CSeq);
 		if (null == cseq || "".equals(cseq)) {
-			logger.error("cesq is null.");
+			logger.error("cesq is null...................");
 			handleError(session, "0", RtspCode.HeaderFieldNotValidForResource);
 			return;
 		}
@@ -330,7 +327,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		//get sessionKey
 		String sessionKey = request.getHeader(RtspHeaderCode.Session);
 		if (null == sessionKey || "".equals(sessionKey)) {
-			logger.debug("sessionKey is null.");
+			logger.debug("sessionKey is null...................");
 			handleError(session, cseq, RtspCode.SessionNotFound);
 		}
 

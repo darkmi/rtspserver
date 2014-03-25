@@ -51,9 +51,8 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 	protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
 		logger.debug("SM SEND bytes = {}", in.getHexDump());
 		in.mark();
-		logger.debug("markvalue ==> " + in.markValue());
+		logger.debug("markValue ==> " + in.markValue());
 		BufferedReader reader = null;
-		StringBuffer originMsg = new StringBuffer();
 		try {
 			reader = new BufferedReader(new InputStreamReader(in.asInputStream(), "US-ASCII"));
 		} catch (UnsupportedEncodingException e) {
@@ -67,7 +66,7 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 		}
 
 		RtspMessage rtspMessage = (RtspMessage) session.getAttribute("rtspMessage");
-
+		StringBuffer originMsg = new StringBuffer();
 		try {
 			while (true) {
 				if (state != ReadState.Command && state != ReadState.Header) {
@@ -171,19 +170,23 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 					char[] cbuf = new char[contentLength];
 					int preReadCount = 0;
 					int readCount = reader.read(cbuf, 0, contentLength);
-					String partBody = new String(cbuf, 0, readCount);
-					logger.debug("currrent BODY --》\n{}", partBody);
-					rtspMessage.appendToBuffer(new StringBuffer(partBody));
-					rtspMessage.saveOriginRequest(new StringBuffer(partBody));
-					if (session.getAttribute("preReadCount") == null) {
-						preReadCount = readCount;
-					} else {
-						preReadCount = (Integer) session.getAttribute("preReadCount") + readCount;
+					logger.debug("readCount ==> {}", readCount);
+					if (readCount > 0) {
+						String partBody = new String(cbuf, 0, readCount);
+						logger.debug("currrent BODY --》\n{}", partBody);
+						rtspMessage.appendToBuffer(new StringBuffer(partBody));
+						rtspMessage.saveOriginRequest(new StringBuffer(partBody));
+						if (session.getAttribute("preReadCount") == null) {
+							preReadCount = readCount;
+						} else {
+							preReadCount = (Integer) session.getAttribute("preReadCount") + readCount;
+						}
+						session.setAttribute("preReadCount", preReadCount);
+						logger.debug("current body length --> {}", readCount);
+						logger.debug("readed body length --> {}", preReadCount);
 					}
-					session.setAttribute("preReadCount", preReadCount);
-					logger.debug("current body length --> {}", readCount);
-					logger.debug("readed body length --> {}", preReadCount);
-					if ((readCount == -1) || (preReadCount == contentLength)) {
+
+					if (preReadCount == contentLength) {
 						session.removeAttribute("preReadCount");
 						state = ReadState.Dispatch;
 					} else {

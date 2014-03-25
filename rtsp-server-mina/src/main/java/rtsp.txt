@@ -74,8 +74,6 @@ Session: 10735304-5266945
 User-Agent: No Autodiscovery
 
 
-响应：
-
 RTSP/1.0 200 OK
 CSeq: 4
 Date: 29 Jul 2010 09:39:40 GMT
