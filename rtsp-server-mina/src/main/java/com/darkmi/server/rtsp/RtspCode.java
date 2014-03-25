@@ -1,8 +1,5 @@
 package com.darkmi.server.rtsp;
 
-/**
- * Description: RTSP CODE.
- */
 public enum RtspCode {
 	Continue(100),
 	

@@ -27,6 +27,7 @@ public abstract class RtspMessage {
 	private Long sequenceNumber;
 	private SafeProperties headers;
 	private StringBuffer buffer;
+	private StringBuffer originRequest;
 
 	/**
 	 * Constructor.
@@ -35,6 +36,7 @@ public abstract class RtspMessage {
 		sequenceNumber = 0L;
 		headers = new SafeProperties();
 		buffer = new StringBuffer();
+		originRequest = new StringBuffer();
 	}
 
 	/**
@@ -215,4 +217,16 @@ public abstract class RtspMessage {
 	public void setSequenceNumber(Long sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
+	
+	public void saveOriginRequest(String line){
+		originRequest.append(line);
+	}
+	
+	public void saveOriginRequest(StringBuffer body){
+		originRequest.append(body);
+	}
+
+	public StringBuffer getOriginRequest() {
+		return originRequest;
+	}	
 }
