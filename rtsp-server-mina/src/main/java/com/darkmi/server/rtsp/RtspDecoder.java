@@ -15,8 +15,6 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.darkmi.server.util.Exceptions;
-
 public class RtspDecoder extends CumulativeProtocolDecoder {
 	private static Logger logger = LoggerFactory.getLogger(RtspDecoder.class);
 
@@ -223,7 +221,7 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
 			 * error on input stream should not happen since the input stream is
 			 * coming from a bytebuffer.
 			 */
-			Exceptions.logStackTrace(e);
+			logger.debug(e.getMessage());
 			return false;
 
 		} finally {
