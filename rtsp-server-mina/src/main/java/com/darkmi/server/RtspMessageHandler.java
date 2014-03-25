@@ -338,11 +338,20 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		} else {
 			//save IO_SESSION_ID
 			rtspSession.setAttribute(IO_SESSION_KEY, session);
+			
+			//sdp
+			StringBuffer sdp = new StringBuffer();
+			sdp.append("position: 22\r\n");
+			sdp.append("presentation state: play\r\n\r\n");
+			sdp.append("scale: 1\r\n");
+
 			RtspResponse response = new RtspResponse();
 			response.setCode(RtspCode.OK);
 			response.setHeader(RtspHeaderCode.CSeq, cseq);
 			response.setHeader(RtspHeaderCode.Date, DateUtil.getGmtDate());
 			response.setHeader(RtspHeaderCode.Session, sessionKey);
+			response.setHeader(RtspHeaderCode.ContentLength, String.valueOf(sdp.length()));
+			response.appendToBuffer(sdp);
 			session.write(response);
 		}
 	}

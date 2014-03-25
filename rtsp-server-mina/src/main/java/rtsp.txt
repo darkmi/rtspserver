@@ -1,80 +1,136 @@
-~~~~~~~~~~~~~~~~~~~~~~ 
-
-SETUP rtsp://192.168.7.134:555/movie---2142---movie_387 RTSP/1.0
+SETUP rtsp://rtsp_server_ip:rtsp_server_port RTSP/1.0
 CSeq: 1
-Require: HFC.Delivery.Profile.1.0
-Transport: MP2T/AVP;destination=192.168.14.102;port=49156;unicast
+Content-type:application/sdp
+OnDemandSessionId: f1297824-6824-4c29-b3d5-e0b6aedd99e7
+Require: com.comcast.ngod.r2
+SessionGroup: 80011.12
+StreamControlProto: rtsp
+Transport:  MP2T/DVBC/UDP;unicast;destination=10.1.1.196;client_port=25001;bandwidth=2550000;client=;sop_group=sop_group_one;sop_name=sop_name_one
+User-Agent: RtspClient
+Volume: RivercastTechnology.volume1
+Content-Length: 157
+Method-Code: SETUP
+Date: Thu, 09 Jan 2014 05:17:36 GMT
+
+v=0
+o=- f1297824-6824-4c29-b3d5-e0b6aedd99e7  IN IP4 0.0.0.0
+s=
+c=IN IP4 0.0.0.0
+t=0 0
+a=X-playlist-item:1 CONT5037804163414634 0-
+m=video 0 udp MP2T
+
 
 
 RTSP/1.0 200 OK
 CSeq: 1
-Date: 12 Dec 2011 06:28:54 GMT
-Session: 49462271-1196354595;timeout=60
-Transport: MP2T/AVP;unicast;destination=192.168.14.102;port=49156
-Range: npt=-233.800
-Location: rtsp://192.168.7.134:8070/movie---2142---movie_387
+Date: 17 Mar 2014 19:20:54 CST
+Session: 20140317192054-49858870-34823-00;timeout=60
+Transport: MP2T/DVBC/UDP;unicast;destination=10.1.1.196;client_port=25001;bandwidth=2550000;client=;sop_group=CDN-OSTR1-E;sop_name=CDN-OSTR1-E
+OnDemandSessionId: f1297824-6824-4c29-b3d5-e0b6aedd99e7
+Content-type: application/sdp
+Content-length: 194
+
+v=0
+o=- 20140317192054-49858870-34823-00 3604044054 IN IP4 192.168.14.15
+s= 
+t=0 0
+a=control:rtsp://192.168.14.15:554/20140317192054-49858870-34823-00
+c=IN IP4 0.0.0.0
+m=video 0 udp MP2T
 
 
-~~~~~~~~~~~~~~~~~~~~~~
+==================================
 
-PLAY rtsp://192.168.7.134:8070/movie---2142---movie_387 RTSP/1.0
-CSeq: 2
-Require: HFC.Delivery.Profile.1.0
+
+PLAY rtsp://rtsp_server_ip:rtsp_server_port/session_key RTSP/1.0
+CSeq: 1283
+OnDemandSessionId: 22b03f0e-170b-4845-8c4a-1d7bac576bbc
+Range: npt=0.000-
+Require: com.comcast.ngod.c1
+Scale: 1.000000
+Session: 67937154-2801501649
+User-Agent: RtspClient
+Content-Length: 0
+Date: Mon, 24 Feb 2014 03:21:44 GMT
+
+
+
+RTSP/1.0 200 OK
+CSeq: 1283
+Date: 17 Mar 2014 19:21:15 CST
+Session: 20140317192054-49858870-34823-00
+Range: npt=0.0-226.0
 Scale: 1
-Session: 50461426-5737916562
 
 
-RTSP/1.0 200 OK
-CSeq: 2
-Date: 12 Dec 2011 06:30:46 GMT
-Session: 50461426-5737916562
-Range: npt=0.000-233.800
-Scale: 1
-
-~~~~~~~~~~~~~~~~~~~~~~
-
-PAUSE rtsp://192.168.7.134:8070/movie---2142---movie_387 RTSP/1.0
-CSeq: 2
-Require: HFC.Delivery.Profile.1.0
-Session: 50461426-5737916562
-
-RTSP/1.0 200 OK
-CSeq: 2
-Require: HFC.Delivery.Profile.1.0
-Date: 12 Dec 2011 06:32:05 GMT
-Session: 50461426-5737916562
-Scale: 1.00
-Range: npt=0.000-233.800
+==================================
 
 
+GET_PARAMETER rtsp://rtsp_server_ip:rtsp_server_port/session_key RTSP/1.0
+CSeq: 5
+Content-Type: text/parameters
+OnDemandSessionId: 22b03f0e-170b-4845-8c4a-1d7bac576bbc
+Require: com.comcast.ngod.c1
+Session: 17174597-4944957335
+User-Agent: RtspClient
+Content-Length: 35
+Date: Sun, 26 Jan 2014 07:06:59 GMT
 
-~~~~~~~~~~~~~~~~~~~~~~
-
-
-TEARDOWN rtsp://192.168.7.134:555/movie---2142---movie_387 RTSP/1.0
-CSeq: 1
-Date: 12 Dec 2011 06:32:12 GMT
-Session: 50461426-5737916562
+scale position presentation_state
 
 
 
 RTSP/1.0 200 OK
-CSeq: 1
-Date: 12 Dec 2011 06:32:12 GMT
-Location: rtsp://192.168.7.134:555/movie---2142---movie_387
-Session: 50461426-5737916562
+CSeq: 5
+Session: 20140317192054-49858870-34823-00
+Date: 17 Mar 2014 19:21:37 CST
+Content-Length: 50
+Content-Type: text/parameters
 
-~~~~~~~~~~~~~~~~~~~~~~
+position: 22
+presentation state: play
+scale: 1
 
-GET_PARAMETER rtsp://192.168.14.195:8060/wodeyuandianying RTSP/1.0
-Cseq: 4
-Require: HFC.Delivery.Profile.1.0
-Date: 29 Jul 2010 09:41:31 GMT
-Session: 10735304-5266945
-User-Agent: No Autodiscovery
+
+==================================
+
+
+PAUSE rtsp://rtsp_server_ip:rtsp_server_port/session_key RTSP/1.0
+CSeq: 7
+OnDemandSessionId: 787066d9-c154-4c58-a951-02286e6f38ec
+Range: npt=now-
+Require: com.comcast.ngod.c1
+Session: 17174597-4944957335
+User-Agent: RtspClient
+Content-Length: 0
+Date: Thu, 02 Jan 2014 00:55:28 GMT
+
+RTSP/1.0 200 OK
+CSeq: 7
+Session: 20140317192054-49858870-34823-00
+Date: 17 Mar 2014 19:22:06 CST
+Range: npt=51.0-226.0
+
+
+==================================
+
+
+TEARDOWN rtsp://rtsp_server_ip:rtsp_server_port/session_key RTSP/1.0
+CSeq: 346
+OnDemandSessionId: 22b03f0e-170b-4845-8c4a-1d7bac576bbc
+Reason: 200 "user pressed stop"
+Require: com.comcast.ngod.r2
+Session: 17174597-4944957335
+User-Agent: RtspClient
+Content-Length: 0
+Date: Thu, 02 Jan 2014 00:55:29 GMT
+
 
 
 RTSP/1.0 200 OK
-CSeq: 4
-Date: 29 Jul 2010 09:39:40 GMT
-Session: 10735304-5266945
+CSeq: 346
+Session: 20140317192054-49858870-34823-00
+Date: 17 Mar 2014 19:22:20 CST
+StopPoint: 1 51.0
+
