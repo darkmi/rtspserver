@@ -42,8 +42,8 @@ public class HttpSnoopServer {
             b.group(bossGroup, workerGroup)
              .channel(NioServerSocketChannel.class)
              .childHandler(new HttpSnoopServerInitializer());
-
-            Channel ch = b.bind(port).sync().channel();
+            
+            Channel ch = b.bind("192.168.14.116",9999).sync().channel();
             ch.closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();

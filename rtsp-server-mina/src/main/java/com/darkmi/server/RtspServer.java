@@ -20,8 +20,6 @@ public class RtspServer {
 	private IoAcceptor acceptor;
 	private String ip;
 	private int port;
-	private int setupPort;
-	private int playPort;
 
 	public void start() {
 		acceptor = new NioSocketAcceptor(Runtime.getRuntime().availableProcessors() + 1);
@@ -30,9 +28,8 @@ public class RtspServer {
 		acceptor.setHandler(messageHandler);
 		acceptor.getSessionConfig().setMinReadBufferSize(MIN_READ_BUFFER_SIZE);
 		try {
-			acceptor.bind(new InetSocketAddress(ip, setupPort));
-			acceptor.bind(new InetSocketAddress(ip, playPort));
-			logger.debug("RTSP Server start, ip={" + ip + "}, setupport={}, playport={}", setupPort, playPort);
+			acceptor.bind(new InetSocketAddress(ip, port));
+			logger.debug("RTSP Server start, ip={" + ip + "}, port={}", port);
 		} catch (IOException e) {
 			logger.warn("bind port error...", e);
 		}
@@ -52,18 +49,6 @@ public class RtspServer {
 		this.ip = ip;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public void setSetupPort(int setupPort) {
-		this.setupPort = setupPort;
-	}
-
-	public void setPlayPort(int playPort) {
-		this.playPort = playPort;
-	}
-
 	public String getIp() {
 		return ip;
 	}
@@ -72,11 +57,7 @@ public class RtspServer {
 		return port;
 	}
 
-	public int getPlayPort() {
-		return playPort;
-	}
-
-	public int getSetupPort() {
-		return setupPort;
+	public void setPort(int port) {
+		this.port = port;
 	}
 }

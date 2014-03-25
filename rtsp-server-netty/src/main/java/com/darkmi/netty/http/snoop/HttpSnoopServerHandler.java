@@ -56,6 +56,7 @@ public class HttpSnoopServerHandler extends SimpleChannelInboundHandler<Object> 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
+    	System.out.println("request ==> \n" + msg);
         if (msg instanceof HttpRequest) {
             HttpRequest request = this.request = (HttpRequest) msg;
 
@@ -123,6 +124,7 @@ public class HttpSnoopServerHandler extends SimpleChannelInboundHandler<Object> 
                     buf.append("\r\n");
                 }
 
+                System.out.println("trailer ==> \n" + trailer);
                 writeResponse(trailer, ctx);
             }
         }
@@ -174,6 +176,7 @@ public class HttpSnoopServerHandler extends SimpleChannelInboundHandler<Object> 
         }
 
         // Write the response.
+        System.out.println("response ==> \n" + response);
         ctx.write(response);
 
         return keepAlive;

@@ -9,7 +9,7 @@ public class Main {
 		RtspServer rtspServer = (RtspServer) ctx.getBean(RtspServer.class);
 		RtspMessageHandler handler = ctx.getBean(RtspMessageHandler.class);
 		handler.setIp(rtspServer.getIp());
-		handler.setPlayPort(rtspServer.getPlayPort());
+		handler.setPort(rtspServer.getPort());
 		rtspServer.setMessageHandler(handler);
 		rtspServer.start();
 	}

@@ -15,8 +15,7 @@ import com.darkmi.server.RtspServer;
 @PropertySource("classpath:application.properties")
 public class ServerConfig {
 	private static final String PROPERTY_RTSP_SERVER_IP = "rtsp.server.ip";
-	private static final String PROPERTY_RTSP_SERVER_SETUP_PORT = "rtsp.server.setup.port";
-	private static final String PROPERTY_RTSP_SERVER_PLAY_PORT = "rtsp.server.play.port";
+	private static final String PROPERTY_RTSP_SERVER_PORT = "rtsp.server.port";
 
 	@Autowired
 	private Environment environment;
@@ -25,8 +24,7 @@ public class ServerConfig {
 	public RtspServer rtspServer() {
 		RtspServer rtspServer = new RtspServer();
 		rtspServer.setIp(environment.getProperty(PROPERTY_RTSP_SERVER_IP));
-		rtspServer.setSetupPort(Integer.parseInt(environment.getProperty(PROPERTY_RTSP_SERVER_SETUP_PORT)));
-		rtspServer.setPlayPort(Integer.parseInt(environment.getProperty(PROPERTY_RTSP_SERVER_PLAY_PORT)));
+		rtspServer.setPort(Integer.parseInt(environment.getProperty(PROPERTY_RTSP_SERVER_PORT)));
 		return rtspServer;
 	}
 }

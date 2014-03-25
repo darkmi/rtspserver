@@ -26,46 +26,81 @@ import io.netty.util.CharsetUtil;
 
 public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObject> {
 
-    @Override
-    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        if (msg instanceof HttpResponse) {
-            HttpResponse response = (HttpResponse) msg;
+	@Override
+	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("channelRegistered");
+	}
 
-            System.out.println("STATUS: " + response.getStatus());
-            System.out.println("VERSION: " + response.getProtocolVersion());
-            System.out.println();
+	@Override
+	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("channelUnregistered");
+	}
 
-            if (!response.headers().isEmpty()) {
-                for (String name: response.headers().names()) {
-                    for (String value: response.headers().getAll(name)) {
-                        System.out.println("HEADER: " + name + " = " + value);
-                    }
-                }
-                System.out.println();
-            }
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("channelActive");
+	}
 
-            if (HttpHeaders.isTransferEncodingChunked(response)) {
-                System.out.println("CHUNKED CONTENT {");
-            } else {
-                System.out.println("CONTENT {");
-            }
-        }
-        if (msg instanceof HttpContent) {
-            HttpContent content = (HttpContent) msg;
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("channelInactive");
+	}
 
-            System.out.print(content.content().toString(CharsetUtil.UTF_8));
-            System.out.flush();
+	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("channelReadComplete");
+	}
 
-            if (content instanceof LastHttpContent) {
-                System.out.println("} END OF CONTENT");
-            }
-        }
-    }
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		System.out.println("userEventTriggered");
+	}
 
-    @Override
-    public void exceptionCaught(
-            ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        ctx.close();
-    }
+	@Override
+	public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("channelRegistered");
+	}
+
+	@Override
+	public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+		System.out.println("response ==> \n" + msg);
+		if (msg instanceof HttpResponse) {
+			HttpResponse response = (HttpResponse) msg;
+
+			System.out.println("STATUS: " + response.getStatus());
+			System.out.println("VERSION: " + response.getProtocolVersion());
+			System.out.println();
+
+			if (!response.headers().isEmpty()) {
+				for (String name : response.headers().names()) {
+					for (String value : response.headers().getAll(name)) {
+						System.out.println("HEADER: " + name + " = " + value);
+					}
+				}
+				System.out.println();
+			}
+
+			if (HttpHeaders.isTransferEncodingChunked(response)) {
+				System.out.println("CHUNKED CONTENT {");
+			} else {
+				System.out.println("CONTENT {");
+			}
+		}
+		if (msg instanceof HttpContent) {
+			HttpContent content = (HttpContent) msg;
+
+			System.out.print(content.content().toString(CharsetUtil.UTF_8));
+			System.out.flush();
+
+			if (content instanceof LastHttpContent) {
+				System.out.println("} END OF CONTENT");
+			}
+		}
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		cause.printStackTrace();
+		ctx.close();
+	}
 }

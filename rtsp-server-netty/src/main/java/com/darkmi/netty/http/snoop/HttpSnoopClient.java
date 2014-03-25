@@ -65,7 +65,7 @@ public class HttpSnoopClient {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class).handler(new HttpSnoopClientInitializer(ssl));
+			b.group(group).channel(NioSocketChannel.class).handler(new HttpSnoopClientInitializer());
 
 			// Make the connection attempt.
 			Channel ch = b.connect(host, port).sync().channel();
@@ -83,6 +83,7 @@ public class HttpSnoopClient {
 							"another-cookie", "bar")));
 
 			// Send the HTTP request.
+			System.out.println("request ==> \n" + request);
 			ch.writeAndFlush(request);
 
 			// Wait for the server to close the connection.
@@ -94,12 +95,12 @@ public class HttpSnoopClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length != 1) {
-			System.err.println("Usage: " + HttpSnoopClient.class.getSimpleName() + " <URL>");
-			return;
-		}
+		//if (args.length != 1) {
+		//	System.err.println("Usage: " + HttpSnoopClient.class.getSimpleName() + " <URL>");
+		//	return;
+		//}
 
-		URI uri = new URI(args[0]);
+		URI uri = new URI("http://192.168.14.116:9999");
 		new HttpSnoopClient(uri).run();
 	}
 }

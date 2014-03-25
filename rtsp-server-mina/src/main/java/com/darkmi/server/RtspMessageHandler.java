@@ -30,7 +30,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 	private RtspSessionAccessor sessionAccessor;
 	private static RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
 	private String ip;
-	private int playPort;
+	private int port;
 
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
@@ -144,7 +144,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			response.setHeader(RtspHeaderCode.Session, sessionKey + ";timeout=60");
 			response.setHeader(RtspHeaderCode.Transport, "");
 			response.setHeader(RtspHeaderCode.Range, "npt=0-233.800");
-			String location = "rtsp://" + ip + ":" + playPort + "/";
+			String location = "rtsp://" + ip + ":" + port + "/";
 			response.setHeader(RtspHeaderCode.Location, location);
 			session.write(response);
 		} else if (REQUIRE_VALUE_NGOD_R2.equalsIgnoreCase(requireValue)) {
@@ -166,7 +166,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 			sdp.append("o=- " + sessionKey + " 1339005446 IN IP4 " + ip + "\r\n");
 			sdp.append("s=RTSP Session\r\n");
 			sdp.append("t=0 0\r\n");
-			sdp.append("a=control:rtsp://" + ip + ":" + playPort + "/" + sessionKey + "\r\n");
+			sdp.append("a=control:rtsp://" + ip + ":" + port + "/" + sessionKey + "\r\n");
 			sdp.append("c=IN IP4 0.0.0.0\r\n");
 			sdp.append("m=video 0 RTP/AVP 33\r\n");
 
@@ -401,7 +401,7 @@ public class RtspMessageHandler extends IoHandlerAdapter {
 		this.ip = ip;
 	}
 
-	public void setPlayPort(int playPort) {
-		this.playPort = playPort;
+	public void setPort(int port) {
+		this.port = port;
 	}
 }
