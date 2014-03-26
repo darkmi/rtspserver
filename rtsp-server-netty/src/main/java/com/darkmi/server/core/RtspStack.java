@@ -2,11 +2,6 @@ package com.darkmi.server.core;
 
 import io.netty.handler.codec.http.HttpRequest;
 
-/**
- * main interface.
- * @author darkmi
- *
- */
 public interface RtspStack {
 	
 	public String getAddress();

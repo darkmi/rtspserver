@@ -18,11 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.darkmi.server.core.RtspController;
 import com.darkmi.util.DateUtil;
 
-/**
- * 
- * @author darkmi
- *
- */
 public class SetupAction implements Callable<HttpResponse> {
 	private static Logger logger = LoggerFactory.getLogger(SetupAction.class);
 	private RtspController rtspController;
@@ -94,10 +89,10 @@ public class SetupAction implements Callable<HttpResponse> {
 		//set sdp extension
 		StringBuffer sdp = new StringBuffer();
 		sdp.append("v=0\r\n");
-		sdp.append("o=- " + "" + " 1339005446 IN IP4 " + rtspController.getIp() + "\r\n");
+		//sdp.append("o=- " + "" + " 1339005446 IN IP4 " + rtspController.getIp() + "\r\n");
 		sdp.append("s=RTSP Session\r\n");
 		sdp.append("t=0 0\r\n");
-		sdp.append("a=control:rtsp://" + rtspController.getIp() + ":" + rtspController.getPort() + "/" + "" + "\r\n");
+		//sdp.append("a=control:rtsp://" + rtspController.getIp() + ":" + rtspController.getPort() + "/" + "" + "\r\n");
 		sdp.append("c=IN IP4 0.0.0.0\r\n");
 		sdp.append("m=video 0 RTP/AVP 33\r\n");
 
