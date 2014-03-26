@@ -10,17 +10,9 @@ import io.netty.handler.codec.rtsp.RtspVersions;
 
 import java.util.concurrent.Callable;
 
-import org.apache.log4j.Logger;
-
 import com.darkmi.server.core.RtspController;
 
-/**
- * 
- * @author darkmi
- *
- */
 public class DescribeAction implements Callable<HttpResponse> {
-	private static Logger logger = Logger.getLogger(DescribeAction.class);
 	private HttpRequest request = null;
 	public DescribeAction( HttpRequest request) {
 		this.request = request;
@@ -28,11 +20,10 @@ public class DescribeAction implements Callable<HttpResponse> {
 
 	public HttpResponse call() throws Exception {
 		HttpResponse response = null;
-//		response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
-//		response.setHeader(HttpHeaders.Names.SERVER, RtspController.SERVER);
-//		response.setHeader(RtspHeaders.Names.CSEQ, this.request.getHeader(RtspHeaders.Names.CSEQ));
-//		response.setHeader(HttpHeaders.Names.CONTENT_LENGTH, "0");
-//		logger.debug(response);
+		response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
+		response.headers().set(HttpHeaders.Names.SERVER, RtspController.SERVER);
+		response.headers().set(RtspHeaders.Names.CSEQ, this.request.headers().get(RtspHeaders.Names.CSEQ));
+		response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, "0");
 		return response;
 	}
 }

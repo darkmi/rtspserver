@@ -1,11 +1,11 @@
 package com.darkmi.server.session;
 
-//import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Component;
 
 /**
  * 管理SessionIdentifier,SessionKeyFactory,SessionStore的门面模式.
  */
-//@Component
+@Component
 public class DefaultSessionAccessor implements RtspSessionAccessor {
 	//private static final Logger logger = LoggerFactory.getLogger(DefaultSessionAccessor.class);
 	private RtspSessionStore store;

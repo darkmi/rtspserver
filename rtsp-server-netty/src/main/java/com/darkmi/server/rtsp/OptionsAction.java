@@ -9,11 +9,6 @@ import io.netty.handler.codec.rtsp.RtspVersions;
 
 import java.util.concurrent.Callable;
 
-/**
- * 
- * @author darkmi
- *
- */
 public class OptionsAction implements Callable<HttpResponse> {
 	private HttpRequest request = null;
 

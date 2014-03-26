@@ -37,4 +37,12 @@ public class ServerConfig {
 		}
 		return rtspController;
 	}
+	
+	public String getIp(){
+		return environment.getProperty(PROPERTY_RTSP_SERVER_IP);
+	}
+	
+	public int getPort(){
+		return Integer.parseInt(environment.getProperty(PROPERTY_RTSP_SERVER_PORT));
+	}
 }

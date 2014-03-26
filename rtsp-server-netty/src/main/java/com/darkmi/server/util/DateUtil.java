@@ -1,4 +1,4 @@
-package com.darkmi.util;
+package com.darkmi.server.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

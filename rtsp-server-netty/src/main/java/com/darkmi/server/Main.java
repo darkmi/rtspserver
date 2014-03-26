@@ -14,11 +14,5 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		//RtspMessageHandler handler = ctx.getBean(RtspMessageHandler.class);
-		//handler.setIp(rtspServer.getIp());
-		//handler.setPlayPort(rtspServer.getPlayPort());
-		//rtspServer.setMessageHandler(handler);
-		//rtspServer.start();
 	}
 }
