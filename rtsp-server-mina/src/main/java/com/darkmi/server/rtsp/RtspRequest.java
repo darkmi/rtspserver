@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
  * rtsp request.
  */
 public class RtspRequest extends RtspMessage {
-
 	private static Logger logger = LoggerFactory.getLogger(RtspRequest.class);
 
 	public enum Verb {
@@ -28,10 +27,6 @@ public class RtspRequest extends RtspMessage {
 	private Verb verb;
 	private String url;
 
-
-	/**
-	 * 默认构造函数
-	 */
 	public RtspRequest() {
 		super();
 		verb = Verb.None;

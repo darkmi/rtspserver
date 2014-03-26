@@ -1,4 +1,4 @@
-package com.darkmi.server.util;
+package com.darkmi.server.rtsp;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,7 +27,7 @@ public class SafeProperties extends Properties {
 	}
 
 	/**
-	 * 读入属性文件.
+	 * load property file.
 	 */
 	@Override
 	public synchronized void load(InputStream inStream) throws IOException {

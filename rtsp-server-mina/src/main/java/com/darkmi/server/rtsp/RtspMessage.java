@@ -2,8 +2,6 @@ package com.darkmi.server.rtsp;
 
 import java.nio.CharBuffer;
 
-import com.darkmi.server.util.SafeProperties;
-
 /**
  * Base abstract class for RTSP messages.
  */

@@ -6,7 +6,6 @@ import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
 public class RtspEncoder extends ProtocolEncoderAdapter {
-	//private static Logger logger = LoggerFactory.getLogger(RtspEncoder.class);
 	@Override
 	public void encode(IoSession session, Object message, ProtocolEncoderOutput out) throws Exception {
 		String request = message.toString();

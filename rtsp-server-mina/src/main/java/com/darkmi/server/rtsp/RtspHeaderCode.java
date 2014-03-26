@@ -35,15 +35,7 @@ public enum RtspHeaderCode {
 	InbandMarker("InbandMarker"),
 	insertDuration("insertDuration"),
 	Policy("Policy"),
-	Reason("Reason"),
-	//------
-	ProvisionPort("ProvisionPort"),
-	ReportTrafficMismatch("ReportTrafficMismatch"),
-	JitterBuffer("JitterBuffer"),
-	StartChecking("StartChecking"),
-	StopChecking("StopChecking"),
-	//------
-	XNotice("x-notice");
+	Reason("Reason");
 	
 
 	private final String value;
