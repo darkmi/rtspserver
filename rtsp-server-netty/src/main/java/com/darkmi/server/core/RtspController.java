@@ -9,8 +9,6 @@ import io.netty.util.CharsetUtil;
 
 import java.util.concurrent.Callable;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 
 import com.darkmi.server.config.ServerConfig;
@@ -20,6 +18,7 @@ import com.darkmi.server.rtsp.PauseAction;
 import com.darkmi.server.rtsp.PlayAction;
 import com.darkmi.server.rtsp.SetupAction;
 import com.darkmi.server.rtsp.TeardownAction;
+import com.darkmi.server.session.DefaultSessionAccessor;
 import com.darkmi.server.session.RtspSessionAccessor;
 import com.darkmi.server.session.RtspSessionKeyFactory;
 import com.darkmi.server.session.SimpleRandomKeyFactory;
@@ -34,9 +33,8 @@ public class RtspController implements RtspListener {
 	private int port;
 	private ServerConfig serverConfig;
 	private RtspStack server = null;
+	public static final RtspSessionAccessor sessionAccessor = new DefaultSessionAccessor();
 	public static final RtspSessionKeyFactory keyFactory = new SimpleRandomKeyFactory();
-	@Resource
-	public static RtspSessionAccessor sessionAccessor;
 
 	public void start() throws Exception {
 		this.server = new RtspServerStackImpl(ip, port);
@@ -166,5 +164,4 @@ public class RtspController implements RtspListener {
 	public void setServerConfig(ServerConfig serverConfig) {
 		this.serverConfig = serverConfig;
 	}
-
 }
