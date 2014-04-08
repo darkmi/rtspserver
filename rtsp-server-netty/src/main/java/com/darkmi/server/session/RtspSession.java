@@ -2,14 +2,8 @@ package com.darkmi.server.session;
 
 import java.util.Set;
 
-/**
- * 提供了在多个请求之间共享数据的机制.
- */
 public interface RtspSession {
 
-  /**
-   * 获得session标识符.
-   */
   String getId();
 
   /**

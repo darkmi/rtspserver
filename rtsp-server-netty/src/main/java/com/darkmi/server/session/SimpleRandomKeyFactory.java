@@ -2,9 +2,6 @@ package com.darkmi.server.session;
 
 import org.apache.commons.lang.RandomStringUtils;
 
-/**
- * 
- */
 public class SimpleRandomKeyFactory implements RtspSessionKeyFactory {
 
   private static final int HEADER_COUNT = 8;

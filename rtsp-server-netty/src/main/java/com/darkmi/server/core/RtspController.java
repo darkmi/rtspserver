@@ -9,7 +9,8 @@ import io.netty.util.CharsetUtil;
 
 import java.util.concurrent.Callable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.darkmi.server.config.ServerConfig;
 import com.darkmi.server.rtsp.AnnounceAction;
@@ -24,7 +25,7 @@ import com.darkmi.server.session.RtspSessionKeyFactory;
 import com.darkmi.server.session.SimpleRandomKeyFactory;
 
 public class RtspController implements RtspListener {
-  public static final Logger logger = Logger.getLogger(RtspController.class);
+  private static Logger logger = LoggerFactory.getLogger(RtspController.class);
   public static final String SERVER = "RtspServer";
   public static final String REQUIRE_VALUE_NGOD_R2 = "com.comcast.ngod.r2";
   public static final String REQUIRE_VALUE_NGOD_C1 = "com.comcast.ngod.c1";
@@ -49,10 +50,7 @@ public class RtspController implements RtspListener {
 
   @Override
   public void onRtspRequest(HttpRequest request, Channel channel) {
-    logger.debug("Receive request ==> \n " + request);
-    // String OnDemandSessionId = request.headers().get("OnDemandSessionId");
-    // logger.debug("OnDemandSessionId ==> " + OnDemandSessionId);
-    // channelMap.put(OnDemandSessionId, channel);
+    // logger.debug("Receive request ==> \n " + request);
     try {
       if (request.getMethod().equals(RtspMethods.SETUP)) {
         onSetupRequest(request, channel);

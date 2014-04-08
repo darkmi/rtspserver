@@ -15,14 +15,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class ExpiringMap<K, V> implements Map<K, V> {
 
-  /**
-   * 默认的存活时长,60
-   */
   public static final int DEFAULT_TIME_TO_LIVE = 60;
 
-  /**
-   * 默认的失效检查时间,1
-   */
   public static final int DEFAULT_EXPIRATION_INTERVAL = 1;
 
   private static volatile int expirerCount = 1;

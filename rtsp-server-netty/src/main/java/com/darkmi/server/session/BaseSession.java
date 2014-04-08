@@ -2,55 +2,30 @@ package com.darkmi.server.session;
 
 import java.util.Set;
 
-/**
- * <code>RtspSession</code>的一个实现.
- */
 public class BaseSession implements RtspSession {
 
-  /** session标识符 */
   private String id;
-
-  /** session维护者 */
   private BasicSessionStore owner;
-
-  /** session的创建时间 */
   private final long creationTime;
 
-  /**
-   * 存储所有用户自定义的attributes.
-   */
   private RtspSessionAttributeMap attributes = new DefaultIoSessionAttributeMap();
 
-  /**
-   * 构造函数.
-   * 
-   * @param owner 用于维护该session的BasicSessionStore.
-   */
   BaseSession(String id, BasicSessionStore owner) {
     this.id = id;
     this.owner = owner;
     this.creationTime = System.currentTimeMillis();
   }
 
-  /**
-   * @return session标识符
-   */
   @Override
   public String getId() {
     return id;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public Object getAttribute(Object key) {
     return getAttribute(key, null);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public Object getAttribute(Object key, Object defaultValue) {
     return attributes.getAttribute(key, defaultValue);
@@ -157,9 +132,6 @@ public class BaseSession implements RtspSession {
     owner.destory(this);
   }
 
-  /**
-	 * 
-	 */
   public RtspSessionAttributeMap getAttributeMap() {
     return attributes;
   }

@@ -1,26 +1,15 @@
 package com.darkmi.server.session;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BasicSessionListener implements RtspSessionListener {
-  private static final Logger logger = LoggerFactory.getLogger(BasicSessionListener.class);
+  // private static final Logger logger = LoggerFactory.getLogger(BasicSessionListener.class);
 
   @Override
-  public void sessionCreated(RtspSession rtspSession) {
-    logger.debug("session 创建 begin { ");
-    logger.debug("session 创建 end } ");
-  }
+  public void sessionCreated(RtspSession rtspSession) {}
 
   @Override
-  public void sessionDestroyed(RtspSession rtspSession) {
-    logger.debug("session 销毁 begin { ");
-    logger.debug("session 销毁 end } ");
-  }
+  public void sessionDestroyed(RtspSession rtspSession) {}
 
   @Override
-  public void sessionExpired(RtspSession rtspSession) {
-    logger.debug("session 失效处理begin { ");
-    logger.debug("session 失效处理end } ");
-  }
+  public void sessionExpired(RtspSession rtspSession) {}
 }

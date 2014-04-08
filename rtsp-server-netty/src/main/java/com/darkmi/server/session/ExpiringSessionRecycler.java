@@ -1,32 +1,19 @@
 package com.darkmi.server.session;
 
-/**
- * {@link RtspSessionRecycler}的一个实现,超时的session将被回收.
- */
 public class ExpiringSessionRecycler implements RtspSessionRecycler {
 
-  /** 保存所有session */
   private ExpiringMap<String, RtspSession> sessionMap;
 
   private ExpiringMap<String, RtspSession>.Expirer mapExpirer;
 
-  /**
-   * 默认构造函数.
-   */
   public ExpiringSessionRecycler() {
     this(ExpiringMap.DEFAULT_TIME_TO_LIVE);
   }
 
-  /**
-   * 构造函数.
-   */
   public ExpiringSessionRecycler(int timeToLive) {
     this(timeToLive, ExpiringMap.DEFAULT_EXPIRATION_INTERVAL);
   }
 
-  /**
-   * 构造函数.
-   */
   public ExpiringSessionRecycler(int timeToLive, int expirationInterval) {
     sessionMap = new ExpiringMap<String, RtspSession>(timeToLive, expirationInterval);
     mapExpirer = sessionMap.getExpirer();

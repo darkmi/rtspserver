@@ -8,10 +8,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RtspServerStackImpl implements RtspStack {
-  private static Logger logger = Logger.getLogger(RtspServerStackImpl.class);
+  private static Logger logger = LoggerFactory.getLogger(RtspServerStackImpl.class);
   private final String ip;
   private final int port;
   private RtspListener listener = null;
