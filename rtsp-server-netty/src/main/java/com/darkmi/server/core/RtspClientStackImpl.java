@@ -11,87 +11,87 @@ import io.netty.handler.codec.http.HttpResponse;
 import org.apache.log4j.Logger;
 
 public class RtspClientStackImpl implements RtspStack {
-	private static Logger logger = Logger.getLogger(RtspClientStackImpl.class);
-	private String ip;
-	private int port;
-	private Bootstrap rtspClient;
-	private RtspListener listener = null;
-	//public static Channel channel = null;
+  private static Logger logger = Logger.getLogger(RtspClientStackImpl.class);
+  private String ip;
+  private int port;
+  private Bootstrap rtspClient;
+  private RtspListener listener = null;
 
-	public RtspClientStackImpl() {
-	}
+  // public static Channel channel = null;
 
-	public void start() {
-		EventLoopGroup group = new NioEventLoopGroup();
-		rtspClient = new Bootstrap();
-		rtspClient.group(group).channel(NioSocketChannel.class);
-		rtspClient.handler(new RtspClientInitializer(this).get());
-		//rtspClient.option(ChannelOption.SO_KEEPALIVE, true);
-	}
+  public RtspClientStackImpl() {}
 
-	public void stop() {
-		//ChannelFuture cf = channel.getCloseFuture();
-		//cf.addListener(new ClientChannelFutureListener());
-		//channel.close();
-		//cf.awaitUninterruptibly();
-		//bootstrap.getFactory().releaseExternalResources();
+  public void start() {
+    EventLoopGroup group = new NioEventLoopGroup();
+    rtspClient = new Bootstrap();
+    rtspClient.group(group).channel(NioSocketChannel.class);
+    rtspClient.handler(new RtspClientInitializer(this).get());
+    // rtspClient.option(ChannelOption.SO_KEEPALIVE, true);
+  }
 
-	}
+  public void stop() {
+    // ChannelFuture cf = channel.getCloseFuture();
+    // cf.addListener(new ClientChannelFutureListener());
+    // channel.close();
+    // cf.awaitUninterruptibly();
+    // bootstrap.getFactory().releaseExternalResources();
 
-	protected void processRtspResponse(HttpResponse rtspResponse ) {
-		synchronized (this.listener) {
-			listener.onRtspResponse(rtspResponse);
-		}
-	}
+  }
 
-	protected void processRtspRequest(HttpRequest rtspRequest, Channel channel) {
-		synchronized (this.listener) {
-			listener.onRtspRequest(rtspRequest, channel);
-		}
-	}
+  protected void processRtspResponse(HttpResponse rtspResponse) {
+    synchronized (this.listener) {
+      listener.onRtspResponse(rtspResponse);
+    }
+  }
 
-	public void sendRequest(HttpRequest rtspRequest, String host, int port) {
-		logger.debug("send Request { ...");
-		Channel channel = connect(host, port);
-		if (channel != null) {
-			try {
-				channel.writeAndFlush(rtspRequest).sync();
-			} catch (InterruptedException e) {
-				logger.error("消息发送失败.", e);
-			}
-		} else {
-			logger.warn("消息发送失败,连接尚未建立!");
-		}
-		logger.debug("send Request ... } ");
-		
-		// Wait for the server to close the connection.
-		//try {
-		//	channel.closeFuture().sync();
-		//} catch (InterruptedException e) {
-		//	logger.error(String.format("连接Server(IP[%s],PORT[%s])失败", host, port), e);
-		//}
-	}
+  protected void processRtspRequest(HttpRequest rtspRequest, Channel channel) {
+    synchronized (this.listener) {
+      listener.onRtspRequest(rtspRequest, channel);
+    }
+  }
 
-	private Channel connect(String ip, int port) {
-		Channel ch = null;
-		try {
-			ch = rtspClient.connect(ip, port).sync().channel();
-		} catch (Exception e) {
-			logger.error(String.format("连接Server(IP[%s],PORT[%s])失败", ip, port), e);
-		}
-		return ch;
-	}
-	
+  public void sendRequest(HttpRequest rtspRequest, String host, int port) {
+    logger.debug("send Request { ...");
+    Channel channel = connect(host, port);
+    if (channel != null) {
+      try {
+        channel.writeAndFlush(rtspRequest).sync();
+      } catch (InterruptedException e) {
+        logger.error("消息发送失败.", e);
+      }
+    } else {
+      logger.warn("消息发送失败,连接尚未建立!");
+    }
+    logger.debug("send Request ... } ");
 
-	public String getAddress() {
-		return this.ip;
-	}
+    // Wait for the server to close the connection.
+    // try {
+    // channel.closeFuture().sync();
+    // } catch (InterruptedException e) {
+    // logger.error(String.format("连接Server(IP[%s],PORT[%s])失败", host, port), e);
+    // }
+  }
 
-	public int getPort() {
-		return this.port;
-	}
+  private Channel connect(String ip, int port) {
+    Channel ch = null;
+    try {
+      ch = rtspClient.connect(ip, port).sync().channel();
+    } catch (Exception e) {
+      logger.error(String.format("连接Server(IP[%s],PORT[%s])失败", ip, port), e);
+    }
+    return ch;
+  }
 
-	public void setRtspListener(RtspListener listener) {
-		this.listener = listener;
-	}
+
+  public String getAddress() {
+    return this.ip;
+  }
+
+  public int getPort() {
+    return this.port;
+  }
+
+  public void setRtspListener(RtspListener listener) {
+    this.listener = listener;
+  }
 }

@@ -20,69 +20,74 @@ import com.darkmi.server.session.RtspSession;
 import com.darkmi.server.util.DateUtil;
 
 public class PlayAction implements Callable<HttpResponse> {
-	private static Logger logger = LoggerFactory.getLogger(PlayAction.class);
-	private HttpRequest request = null;
+  private static Logger logger = LoggerFactory.getLogger(PlayAction.class);
+  private HttpRequest request = null;
 
-	public PlayAction(HttpRequest request) {
-		this.request = request;
-	}
+  public PlayAction(HttpRequest request) {
+    this.request = request;
+  }
 
-	public HttpResponse call() throws Exception {
-		HttpResponse response = null;
-		//get cesq
-		String cseq = request.headers().get(Names.CSEQ);
-		if (null == cseq || "".equals(cseq)) {
-			logger.error("cesq is null.........");
-			response = new DefaultFullHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
-			response.headers().set(Names.SERVER, RtspController.SERVER);
-			response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
-			return response;
-		}
+  public HttpResponse call() throws Exception {
+    HttpResponse response = null;
+    // get cesq
+    String cseq = request.headers().get(Names.CSEQ);
+    if (null == cseq || "".equals(cseq)) {
+      logger.error("cesq is null.........");
+      response =
+          new DefaultFullHttpResponse(RtspVersions.RTSP_1_0,
+              RtspResponseStatuses.INTERNAL_SERVER_ERROR);
+      response.headers().set(Names.SERVER, RtspController.SERVER);
+      response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
+      return response;
+    }
 
-		//get require
-		String require = request.headers().get(Names.REQUIRE);
-		if (null == require || "".equals(require) || (!require.equals(RtspController.REQUIRE_VALUE_NGOD_R2))) {
-			logger.error("require is {}.........", require);
-			response = new DefaultFullHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.INTERNAL_SERVER_ERROR);
-			response.headers().set(HttpHeaders.Names.SERVER, RtspController.SERVER);
-			response.headers().set(RtspHeaders.Names.CSEQ, request.headers().get(RtspHeaders.Names.CSEQ));
-			response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
-			return response;
-		}
+    // get require
+    String require = request.headers().get(Names.REQUIRE);
+    if (null == require || "".equals(require)
+        || (!require.equals(RtspController.REQUIRE_VALUE_NGOD_R2))) {
+      logger.error("require is {}.........", require);
+      response =
+          new DefaultFullHttpResponse(RtspVersions.RTSP_1_0,
+              RtspResponseStatuses.INTERNAL_SERVER_ERROR);
+      response.headers().set(HttpHeaders.Names.SERVER, RtspController.SERVER);
+      response.headers().set(RtspHeaders.Names.CSEQ, request.headers().get(RtspHeaders.Names.CSEQ));
+      response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
+      return response;
+    }
 
-		String sessionKey = this.request.headers().get(Names.SESSION);
-		if (null == sessionKey || "".equals(sessionKey)) {
-			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.BAD_REQUEST);
-			response.headers().set(Names.SERVER, RtspController.SERVER);
-			response.headers().set(Names.CSEQ, request.headers().get(Names.CSEQ));
-			response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
-			return response;
-		}
+    String sessionKey = this.request.headers().get(Names.SESSION);
+    if (null == sessionKey || "".equals(sessionKey)) {
+      response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.BAD_REQUEST);
+      response.headers().set(Names.SERVER, RtspController.SERVER);
+      response.headers().set(Names.CSEQ, request.headers().get(Names.CSEQ));
+      response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
+      return response;
+    }
 
-		//get session
-		RtspSession rtspSession = RtspController.sessionAccessor.getSession(sessionKey, false);
-		if (null == rtspSession) {
-			logger.error("rtspSession is null.");
-			response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.BAD_REQUEST);
-			response.headers().set(Names.SERVER, RtspController.SERVER);
-			response.headers().set(Names.CSEQ, request.headers().get(Names.CSEQ));
-			response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
-			return response;
-		}
+    // get session
+    RtspSession rtspSession = RtspController.sessionAccessor.getSession(sessionKey, false);
+    if (null == rtspSession) {
+      logger.error("rtspSession is null.");
+      response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.BAD_REQUEST);
+      response.headers().set(Names.SERVER, RtspController.SERVER);
+      response.headers().set(Names.CSEQ, request.headers().get(Names.CSEQ));
+      response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
+      return response;
+    }
 
-		response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
-		response.headers().set(Names.CSEQ, request.headers().get(Names.CSEQ));
-		response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
-		response.headers().set(RtspHeaders.Names.DATE, DateUtil.getGmtDate());
-		response.headers().set(RtspHeaders.Names.SESSION, sessionKey);
-		response.headers().set(RtspHeaders.Names.RANGE, request.headers().get(RtspHeaders.Names.RANGE));
+    response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
+    response.headers().set(Names.CSEQ, request.headers().get(Names.CSEQ));
+    response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
+    response.headers().set(RtspHeaders.Names.DATE, DateUtil.getGmtDate());
+    response.headers().set(RtspHeaders.Names.SESSION, sessionKey);
+    response.headers().set(RtspHeaders.Names.RANGE, request.headers().get(RtspHeaders.Names.RANGE));
 
-		String scale = request.headers().get(RtspHeaders.Names.SCALE);
-		if (null != scale) {
-			response.headers().set(RtspHeaders.Names.SCALE, scale);
-		} else {
-			response.headers().set(RtspHeaders.Names.SCALE, "1.00");
-		}
-		return response;
-	}
+    String scale = request.headers().get(RtspHeaders.Names.SCALE);
+    if (null != scale) {
+      response.headers().set(RtspHeaders.Names.SCALE, scale);
+    } else {
+      response.headers().set(RtspHeaders.Names.SCALE, "1.00");
+    }
+    return response;
+  }
 }

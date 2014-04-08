@@ -13,7 +13,6 @@
 	<packaging>jar</packaging>
 	<name>RTSPServer By Netty</name>
 
-	<!-- 依赖项定义 -->
 	<dependencies>
 		<!-- spring begin -->
 		<dependency>
@@ -50,7 +49,7 @@
 			<artifactId>spring-tx</artifactId>
 		</dependency>
 		<!-- spring end -->
-		
+
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>

@@ -5,6 +5,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
 public interface RtspListener {
-	public void onRtspRequest(HttpRequest request, Channel channel);
-	public void onRtspResponse(HttpResponse response);
+  public void onRtspRequest(HttpRequest request, Channel channel);
+
+  public void onRtspResponse(HttpResponse response);
 }
