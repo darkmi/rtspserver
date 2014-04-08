@@ -3,7 +3,7 @@ package com.darkmi.server.rtsp;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.rtsp.RtspHeaders;
+import io.netty.handler.codec.rtsp.RtspHeaders.Names;
 import io.netty.handler.codec.rtsp.RtspResponseStatuses;
 import io.netty.handler.codec.rtsp.RtspVersions;
 
@@ -19,10 +19,9 @@ public class OptionsAction implements Callable<HttpResponse> {
   public HttpResponse call() throws Exception {
     HttpResponse response = null;
     response = new DefaultHttpResponse(RtspVersions.RTSP_1_0, RtspResponseStatuses.OK);
-    response.headers().add(RtspHeaders.Names.SERVER, "RtspServer");
-    response.headers().add(RtspHeaders.Names.CSEQ,
-        this.request.headers().get(RtspHeaders.Names.CSEQ));
-    response.headers().add(RtspHeaders.Names.PUBLIC, "SETUP,PLAY,PAUSE,TEARDOWN");
+    response.headers().add(Names.SERVER, "RtspServer");
+    response.headers().add(Names.CSEQ, this.request.headers().get(Names.CSEQ));
+    response.headers().add(Names.PUBLIC, "SETUP,PLAY,PAUSE,TEARDOWN,GET_PARAMETER,OPTION");
     return response;
   }
 }

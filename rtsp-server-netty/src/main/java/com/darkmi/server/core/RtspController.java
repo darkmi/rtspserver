@@ -62,6 +62,8 @@ public class RtspController implements RtspListener {
         onGetParameterRequest(request, channel);
       } else if (request.getMethod().equals(RtspMethods.TEARDOWN)) {
         onTeardownRequest(request, channel);
+      }else if (request.getMethod().equals(RtspMethods.OPTIONS)) {
+        onOptionRequest(request, channel);
       }
     } catch (Exception e) {
       logger.error("Unexpected error during processing,Caused by ", e);
@@ -130,6 +132,20 @@ public class RtspController implements RtspListener {
       channel.writeAndFlush(response);
     } catch (Exception e) {
       logger.error("teardown Request Handle Error.........", e);
+    }
+  }
+  
+  private void onOptionRequest(HttpRequest request, Channel channel) {
+    try {
+      Callable<FullHttpResponse> action = new SetupAction(serverConfig, request);
+      FullHttpResponse setupResponse = action.call();
+
+      logger.debug("setup response header =====> \n" + setupResponse);
+      logger.debug("setup response content =====> \n"
+          + setupResponse.content().toString(CharsetUtil.UTF_8));
+      channel.writeAndFlush(setupResponse);
+    } catch (Exception e) {
+      logger.error("Setup Request Handle Error.........", e);
     }
   }
 
