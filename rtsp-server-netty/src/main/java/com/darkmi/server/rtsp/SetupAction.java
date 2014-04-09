@@ -97,7 +97,7 @@ public class SetupAction implements Callable<FullHttpResponse> {
     response.headers().set(Names.DATE, DateUtil.getGmtDate());
     response.headers().set(Names.SESSION, sessionKey + ";timeout=60");
     response.headers().set("OnDemandSessionId", request.headers().get("OnDemandSessionId"));
-    response.headers().set(Names.TRANSPORT, "");
+    response.headers().set(Names.TRANSPORT, transport);
     response.headers().set(Names.RANGE, "npt=0-233.800");
     response.headers().set(Names.CONTENT_TYPE, "application/sdp");
     response.headers().set(Names.CONTENT_LENGTH, String.valueOf(sdp.length()));
