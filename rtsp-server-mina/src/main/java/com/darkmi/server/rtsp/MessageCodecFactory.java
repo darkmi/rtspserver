@@ -7,12 +7,12 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 
 public class MessageCodecFactory implements ProtocolCodecFactory {
 
-	public ProtocolDecoder getDecoder(IoSession session) throws Exception {
-		return new RtspDecoder();
-	}
+  public ProtocolDecoder getDecoder(IoSession session) throws Exception {
+    return new RtspDecoder();
+  }
 
-	public ProtocolEncoder getEncoder(IoSession session) throws Exception {
-		return new RtspEncoder();
-	}
+  public ProtocolEncoder getEncoder(IoSession session) throws Exception {
+    return new RtspEncoder();
+  }
 
 }

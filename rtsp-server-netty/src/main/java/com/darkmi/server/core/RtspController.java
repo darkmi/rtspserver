@@ -62,7 +62,7 @@ public class RtspController implements RtspListener {
         onGetParameterRequest(request, channel);
       } else if (request.getMethod().equals(RtspMethods.TEARDOWN)) {
         onTeardownRequest(request, channel);
-      }else if (request.getMethod().equals(RtspMethods.OPTIONS)) {
+      } else if (request.getMethod().equals(RtspMethods.OPTIONS)) {
         onOptionRequest(request, channel);
       }
     } catch (Exception e) {
@@ -134,7 +134,7 @@ public class RtspController implements RtspListener {
       logger.error("teardown Request Handle Error.........", e);
     }
   }
-  
+
   private void onOptionRequest(HttpRequest request, Channel channel) {
     try {
       Callable<FullHttpResponse> action = new SetupAction(serverConfig, request);

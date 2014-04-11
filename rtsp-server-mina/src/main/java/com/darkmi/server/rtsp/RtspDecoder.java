@@ -205,7 +205,7 @@ public class RtspDecoder extends CumulativeProtocolDecoder {
       }
 
       if (state == ReadState.Dispatch) {
-        //logger.debug("RTSP Message解析完毕，返回消息对象并检查是否有粘包................");
+        // logger.debug("RTSP Message解析完毕，返回消息对象并检查是否有粘包................");
         // The message is already formed send it
         session.removeAttribute("state");
         session.removeAttribute("rtspMessage");

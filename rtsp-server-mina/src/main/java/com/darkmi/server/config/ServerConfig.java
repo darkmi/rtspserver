@@ -11,20 +11,20 @@ import org.springframework.core.env.Environment;
 import com.darkmi.server.RtspServer;
 
 @Configuration
-@ComponentScan(basePackages = { "com.darkmi" })
+@ComponentScan(basePackages = {"com.darkmi"})
 @PropertySource("classpath:application.properties")
 public class ServerConfig {
-	private static final String PROPERTY_RTSP_SERVER_IP = "rtsp.server.ip";
-	private static final String PROPERTY_RTSP_SERVER_PORT = "rtsp.server.port";
+  private static final String PROPERTY_RTSP_SERVER_IP = "rtsp.server.ip";
+  private static final String PROPERTY_RTSP_SERVER_PORT = "rtsp.server.port";
 
-	@Autowired
-	private Environment environment;
+  @Autowired
+  private Environment environment;
 
-	@Bean(autowire = Autowire.BY_TYPE)
-	public RtspServer rtspServer() {
-		RtspServer rtspServer = new RtspServer();
-		rtspServer.setIp(environment.getProperty(PROPERTY_RTSP_SERVER_IP));
-		rtspServer.setPort(Integer.parseInt(environment.getProperty(PROPERTY_RTSP_SERVER_PORT)));
-		return rtspServer;
-	}
+  @Bean(autowire = Autowire.BY_TYPE)
+  public RtspServer rtspServer() {
+    RtspServer rtspServer = new RtspServer();
+    rtspServer.setIp(environment.getProperty(PROPERTY_RTSP_SERVER_IP));
+    rtspServer.setPort(Integer.parseInt(environment.getProperty(PROPERTY_RTSP_SERVER_PORT)));
+    return rtspServer;
+  }
 }

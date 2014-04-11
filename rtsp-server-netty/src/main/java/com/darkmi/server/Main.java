@@ -9,6 +9,7 @@ import com.darkmi.server.core.RtspController;
 
 public class Main {
   private static Logger logger = LoggerFactory.getLogger(Main.class);
+
   public static void main(String[] args) {
     AnnotationConfigApplicationContext ctx =
         new AnnotationConfigApplicationContext(ServerConfig.class);

@@ -1,6 +1,5 @@
 package com.darkmi.server;
 
 public class MutiGetParameterClient {
-	public static void main(String[] args) {
-	}
+  public static void main(String[] args) {}
 }
